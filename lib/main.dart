@@ -1,6 +1,7 @@
 import 'package:agent_referral/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'agent/views/auth/agent_auth_screen.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget{
         primaryColor: Colors.blue
       ),
       home: AgentAuthScreen(),
+      builder: EasyLoading.init(),
     );
   }
   

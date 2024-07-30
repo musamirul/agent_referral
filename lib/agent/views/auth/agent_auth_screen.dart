@@ -26,7 +26,7 @@ class _AgentAuthScreenState extends State<AgentAuthScreen> {
             ],
           );
         }
-        return AgentRegistrationScreen();
+        return LandingScreen();
       },
     );
   }

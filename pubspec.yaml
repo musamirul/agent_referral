@@ -40,6 +40,8 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_storage: ^11.6.9
   firebase_ui_auth: ^1.14.0
+  image_picker: ^1.0.8
+  flutter_easyloading: ^3.0.5
 
 dev_dependencies:
   flutter_test:
