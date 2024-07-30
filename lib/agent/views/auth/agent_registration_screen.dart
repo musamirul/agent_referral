@@ -23,8 +23,20 @@ class _AgentRegistrationScreenState extends State<AgentRegistrationScreen> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(colors: [Colors.yellow.shade900, Colors.yellow])
                     ),
-                    child: Container(
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 90,
+                            width: 90,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
 
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
