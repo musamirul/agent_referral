@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "800777624595",
+    "project_id": "agent-referral-3c9bf",
+    "storage_bucket": "agent-referral-3c9bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800777624595:android:4c98a74af6ea4e7ccef3e6",
+        "android_client_info": {
+          "package_name": "com.example.agent_referral"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVT4IBjvKxtXZSo2rgKpRg8g9RDmwMYLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
