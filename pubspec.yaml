@@ -42,6 +42,8 @@ dependencies:
   firebase_ui_auth: ^1.14.0
   image_picker: ^1.0.8
   flutter_easyloading: ^3.0.5
+  calendar_date_picker2: ^1.1.5
+  time_picker_spinner_pop_up: ^1.5.0
 
 dev_dependencies:
   flutter_test:
