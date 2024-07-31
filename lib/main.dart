@@ -1,7 +1,9 @@
 import 'package:agent_referral/firebase_options.dart';
+import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
 import 'agent/views/auth/agent_auth_screen.dart';
 
@@ -10,7 +12,15 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) {
+        return ReferralProvider();
+      },)
+    ],
+      child: MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget{

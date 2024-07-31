@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReferringPersonScreen extends StatefulWidget {
   const ReferringPersonScreen({super.key});
@@ -8,8 +9,11 @@ class ReferringPersonScreen extends StatefulWidget {
   State<ReferringPersonScreen> createState() => _ReferringPersonScreenState();
 }
 
-class _ReferringPersonScreenState extends State<ReferringPersonScreen> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class _ReferringPersonScreenState extends State<ReferringPersonScreen> with AutomaticKeepAliveClientMixin{
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
   List<String> _referralOption = ['Patient','Relatives','Agent','Doctor','Other'];
   String? referral;
@@ -18,30 +22,34 @@ class _ReferringPersonScreenState extends State<ReferringPersonScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final ReferralProvider _referralProvider = Provider.of<ReferralProvider>(context);
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
               DropdownButtonFormField(hint: Text('Select Referring Person'),items: _referralOption.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem(value: value,child: Text(value));
               }).toList(), onChanged: (value) {
-                referral = value;
+                _referralProvider.getFormData(referralPerson: value);
               },),
               TextFormField(
-                onChanged: (value) {},
+                onChanged: (value) {
+                  _referralProvider.getFormData(referralName: value);
+                },
                 decoration: InputDecoration(label: Text('Name')),
               ),
               DropdownButtonFormField(hint: Text('Select Address Location'),items: _locationOption.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem(child: Text(value),value: value,);
               }).toList(), onChanged: (value) {
-
+                _referralProvider.getFormData(referralLocation: value);
               },),
               SizedBox(height: 20,),
               TextFormField(
                 onChanged: (value) {
-
+                  _referralProvider.getFormData(referralAddress: value);
                 },
                 maxLength: 800,
                 maxLines: 5,
@@ -54,7 +62,7 @@ class _ReferringPersonScreenState extends State<ReferringPersonScreen> {
               ),
               TextFormField(
                 onChanged: (value) {
-
+                  _referralProvider.getFormData(referralEmail: value);
                 },
                 decoration: InputDecoration(label: Text('Email')),
               ),
@@ -65,4 +73,5 @@ class _ReferringPersonScreenState extends State<ReferringPersonScreen> {
       ),
     );
   }
+
 }

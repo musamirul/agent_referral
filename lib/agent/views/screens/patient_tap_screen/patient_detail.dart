@@ -1,0 +1,91 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+class PatientDetail extends StatelessWidget {
+  const PatientDetail({super.key, required this.referralId});
+
+  final String referralId;
+
+  @override
+  Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    CollectionReference patient =
+        FirebaseFirestore.instance.collection('referral');
+    return FutureBuilder<DocumentSnapshot>(
+        future: patient.doc(referralId).get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+
+          if (snapshot.hasData && !snapshot.data!.exists) {
+            return Text("Document does not exist");
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  'Patient Detail',
+                  style: TextStyle(
+                      letterSpacing: 2,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                centerTitle: true,
+                backgroundColor: Colors.blue,
+              ),
+              body: Column(
+                children: [
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text(
+                      data['patientName'],
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      data['patientIc'],
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Divider(
+                      thickness: 0.7,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.email),
+                    title: Text(data['patientIns']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.phone),
+                    title: Text(data['patientInsNumber']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.credit_card),
+                    title: Text(data['patientPayment']),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Text("loading");
+        },
+    );
+  }
+}

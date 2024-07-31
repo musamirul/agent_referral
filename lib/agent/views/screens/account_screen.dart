@@ -81,6 +81,7 @@ class AccountScreen extends StatelessWidget {
                   title: Text('Logout'),
                   onTap: () {
                     _auth.signOut();
+
                   },
                 )
               ],

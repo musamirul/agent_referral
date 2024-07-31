@@ -1,5 +1,7 @@
+import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PatientFamilyScreen extends StatefulWidget {
   const PatientFamilyScreen({super.key});
@@ -8,8 +10,7 @@ class PatientFamilyScreen extends StatefulWidget {
   State<PatientFamilyScreen> createState() => _PatientFamilyScreenState();
 }
 
-class _PatientFamilyScreenState extends State<PatientFamilyScreen> {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class _PatientFamilyScreenState extends State<PatientFamilyScreen> with AutomaticKeepAliveClientMixin{
 
     List<String> _sexOption = ['Male','Female','Others'];
     String? sex;
@@ -17,19 +18,29 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> {
     String? nationality;
 
     @override
+    // TODO: implement wantKeepAlive
+    bool get wantKeepAlive => true;
+
+    @override
     Widget build(BuildContext context) {
+      super.build(context);
+      ReferralProvider _referralProvider = Provider.of<ReferralProvider>(context);
       return Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 TextFormField(
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    _referralProvider.getFormData(patientName: value);
+                  },
                   decoration: InputDecoration(label: Text('Name')),
                 ),
                 TextFormField(
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    _referralProvider.getFormData(patientIc: value);
+                  },
                   decoration:
                   InputDecoration(label: Text('I/C or Passport Number')),
                 ),
@@ -43,14 +54,14 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> {
                   ).toList(),
                   onChanged: (value) {
                     setState(() {
-                      nationality = value;
+                      _referralProvider.getFormData(patientNationality: value);
                     });
                   },
                 ),
                 SizedBox(height: 20,),
                 TextFormField(
                   onChanged: (value) {
-
+                    _referralProvider.getFormData(patientAddress: value);
                   },
                   maxLength: 800,
                   maxLines: 5,
@@ -63,13 +74,13 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> {
                 ),
                 TextFormField(
                   onChanged: (value) {
-
+                    _referralProvider.getFormData(patientPhone: value);
                   },
                   decoration: InputDecoration(label: Text('Contact Number')),
                 ),
                 TextFormField(
                   onChanged: (value) {
-
+                    _referralProvider.getFormData(patientAge: value);
                   },
                   decoration: InputDecoration(label: Text('Age')),
                 ),
@@ -77,7 +88,7 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> {
                   return DropdownMenuItem(value: value,child: Text(value));
                 }).toList(), onChanged: (value) {
                   setState(() {
-                    sex = value;
+                    _referralProvider.getFormData(patientGender: value);
                   });
                 },)
 
@@ -87,6 +98,8 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> {
         ),
       );
     }
+
+
 
 }
 
