@@ -67,17 +67,44 @@ class PatientDetail extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.email),
-                    title: Text(data['patientIns']),
-                  ),
+                  Text('Patient & Family Information'),
                   ListTile(
                     leading: Icon(Icons.phone),
-                    title: Text(data['patientInsNumber']),
+                    title: Text(data['patientPhone'],style: TextStyle()),
                   ),
                   ListTile(
-                    leading: Icon(Icons.credit_card),
-                    title: Text(data['patientPayment']),
+                    leading: Icon(Icons.flag),
+                    title: Text(data['patientNationality']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.safety_divider),
+                    title: Text(data['patientGender']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.home),
+                    title: Text(data['patientAddress']),
+                  ),
+                  if(data['patientPayment']=="NO")
+                    Divider(thickness: 2,color: Colors.grey.shade200,),
+                    Text('Insurance Information'),
+                    ListTile(
+                      leading: Icon(Icons.health_and_safety),
+                      title: Text(data['patientIns']),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.shield),
+                      title: Text(data['patientInsNumber']),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.policy),
+                      title: Text(data['patientPolicyPeriod']),
+                    ),
+                  Divider(thickness: 2,color: Colors.grey.shade200,),
+                  Text('Reason For Referral'),
+                  Column(
+                    children: [
+                      Text('Date Accident / Injury : '+data['patientDateAccident']+' '+data['patientTimeAccident'])
+                    ],
                   ),
                 ],
               ),

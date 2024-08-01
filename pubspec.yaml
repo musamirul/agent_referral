@@ -46,6 +46,7 @@ dependencies:
   time_picker_spinner_pop_up: ^1.5.0
   provider: ^6.1.2
   uuid: ^4.4.2
+  file_picker: ^8.0.0+1
 
 dev_dependencies:
   flutter_test:
