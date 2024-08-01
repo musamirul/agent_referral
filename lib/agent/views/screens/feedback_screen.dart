@@ -18,6 +18,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   String? feedback;
   String? title;
   String? description;
+  TextEditingController feedbackTitle = TextEditingController();
+  TextEditingController feedbackDescription = TextEditingController();
 
   List<String> _feedbackOption = [
     'Concern',
@@ -32,10 +34,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       await _firestore.collection('feedback').doc(referralId).set({
         'agentId':_auth.currentUser!.uid,
         'feedback':feedback,
-        'title':title,
-        'description':description,
+        'title':feedbackTitle.text,
+        'description':feedbackDescription.text,
       }).whenComplete(() {
-
+          feedbackTitle.clear();
+          feedbackDescription.clear();
       },);
     }
 
@@ -67,6 +70,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   height: 20,
                 ),
                 TextFormField(
+                  controller: feedbackTitle,
                   validator: (value) {
                     if(value!.isEmpty){
                       return 'Enter Feedback Title';
@@ -74,24 +78,19 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       return null;
                     }
                   },
-                  onChanged: (value) {
-                    title = value;
-                  },
                   decoration: InputDecoration(label: Text('Feedback Title')),
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 TextFormField(
+                  controller: feedbackDescription,
                   validator: (value) {
                     if(value!.isEmpty){
                       return 'Enter description';
                     }else{
                       return null;
                     }
-                  },
-                  onChanged: (value) {
-                    description = value;
                   },
                   maxLines: 8,
                   maxLength: 800,

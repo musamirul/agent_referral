@@ -86,6 +86,7 @@ class PatientRegisterScreen extends StatelessWidget {
                       'patientComplaints':_referralProvider.referralData['patientComplaints'],
                       'patientDateAccident':_referralProvider.referralData['patientDateAccident'],
                       'patientTimeAccident':_referralProvider.referralData['patientTimeAccident'],
+                      'fileUrlList':_referralProvider.referralData['fileUrlList'],
                     }).whenComplete(() {
                       _referralProvider.clearData();
                       Navigator.push(context, MaterialPageRoute(builder: (context) {

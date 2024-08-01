@@ -26,6 +26,7 @@ class ReferralProvider extends ChangeNotifier {
     String? patientComplaints,
     String? patientDateAccident,
     String? patientTimeAccident,
+    List<String>? fileUrlList,
   }) {
     //ensure that only non null values were added
     if(referralPerson!=null){
@@ -87,6 +88,8 @@ class ReferralProvider extends ChangeNotifier {
     }
     if(patientTimeAccident!=null){
       referralData['patientTimeAccident'] = patientTimeAccident;
+    }if(fileUrlList!=null){
+      referralData['fileUrlList'] = fileUrlList;
     }
     notifyListeners();
   }
