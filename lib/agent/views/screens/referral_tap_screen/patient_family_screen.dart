@@ -32,12 +32,26 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> with Automati
             child: Column(
               children: [
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return 'Enter Name';
+                    }else{
+                      return null;
+                    }
+                  },
                   onChanged: (value) {
                     _referralProvider.getFormData(patientName: value);
                   },
                   decoration: InputDecoration(label: Text('Name')),
                 ),
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return 'Enter I/C or Passport Number';
+                    }else{
+                      return null;
+                    }
+                  },
                   onChanged: (value) {
                     _referralProvider.getFormData(patientIc: value);
                   },
@@ -60,6 +74,13 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> with Automati
                 ),
                 SizedBox(height: 20,),
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return 'Enter Home Address';
+                    }else{
+                      return null;
+                    }
+                  },
                   onChanged: (value) {
                     _referralProvider.getFormData(patientAddress: value);
                   },
@@ -73,12 +94,26 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen> with Automati
                   ),
                 ),
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return 'Enter Contact Number';
+                    }else{
+                      return null;
+                    }
+                  },
                   onChanged: (value) {
                     _referralProvider.getFormData(patientPhone: value);
                   },
                   decoration: InputDecoration(label: Text('Contact Number')),
                 ),
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty){
+                      return 'Enter Age';
+                    }else{
+                      return null;
+                    }
+                  },
                   onChanged: (value) {
                     _referralProvider.getFormData(patientAge: value);
                   },

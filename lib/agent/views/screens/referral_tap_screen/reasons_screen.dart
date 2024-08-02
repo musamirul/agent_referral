@@ -35,6 +35,13 @@ class _ReasonScreenState extends State<ReasonScreen> with AutomaticKeepAliveClie
           child: Column(
             children: [
               TextFormField(
+                validator: (value) {
+                  if(value!.isEmpty){
+                    return 'Enter Patient Complaints';
+                  }else{
+                    return null;
+                  }
+                },
                 onChanged: (value) {
                   _referralProvider.getFormData(patientComplaints: value);
                 },
@@ -80,6 +87,13 @@ class _ReasonScreenState extends State<ReasonScreen> with AutomaticKeepAliveClie
               },),
               SizedBox(height: 5,),
               TextFormField(
+                validator: (value) {
+                  if(value!.isEmpty){
+                    return 'Enter Referral Reasons';
+                  }else{
+                    return null;
+                  }
+                },
                 maxLength: 800,
                 maxLines: 2,
                 onChanged: (value) {

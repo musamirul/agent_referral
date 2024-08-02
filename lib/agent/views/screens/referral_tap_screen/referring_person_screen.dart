@@ -36,6 +36,13 @@ class _ReferringPersonScreenState extends State<ReferringPersonScreen> with Auto
                 _referralProvider.getFormData(referralPerson: value);
               },),
               TextFormField(
+                validator: (value) {
+                  if(value!.isEmpty){
+                    return 'Enter Referral Name';
+                  }else{
+                    return null;
+                  }
+                },
                 onChanged: (value) {
                   _referralProvider.getFormData(referralName: value);
                 },
@@ -48,6 +55,13 @@ class _ReferringPersonScreenState extends State<ReferringPersonScreen> with Auto
               },),
               SizedBox(height: 20,),
               TextFormField(
+                validator: (value) {
+                  if(value!.isEmpty){
+                    return 'Enter Home Address';
+                  }else{
+                    return null;
+                  }
+                },
                 onChanged: (value) {
                   _referralProvider.getFormData(referralAddress: value);
                 },
@@ -61,6 +75,13 @@ class _ReferringPersonScreenState extends State<ReferringPersonScreen> with Auto
                 ),
               ),
               TextFormField(
+                validator: (value) {
+                  if(value!.isEmpty){
+                    return 'Enter Email Address';
+                  }else{
+                    return null;
+                  }
+                },
                 onChanged: (value) {
                   _referralProvider.getFormData(referralEmail: value);
                 },

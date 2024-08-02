@@ -60,8 +60,6 @@ class _InsuranceScreenState extends State<InsuranceScreen> with AutomaticKeepAli
                     _referralProvider.getFormData(patientPolicyPeriod: value);
                   },decoration: InputDecoration(label: Text('Policy Period')),
                   ),
-
-
                 ],
               ),
             SizedBox(height: 20,),

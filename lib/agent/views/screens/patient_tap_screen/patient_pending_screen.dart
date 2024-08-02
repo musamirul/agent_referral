@@ -2,6 +2,7 @@ import 'package:agent_referral/agent/views/screens/patient_tap_screen/patient_de
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class PatientPendingScreen extends StatefulWidget {
   PatientPendingScreen({super.key});
@@ -63,12 +64,15 @@ class _PatientPendingScreenState extends State<PatientPendingScreen> {
                 });
               },
               child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
+                onTap: () async{
+                  EasyLoading.show(status: 'Loading...');
+                  await Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) {
                         return PatientDetail(referralId: referralData['referralId']);
                       },)
-                  );
+                  ).then((value) {
+                    EasyLoading.dismiss();
+                  },);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
