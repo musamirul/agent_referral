@@ -26,6 +26,12 @@ class ReferralProvider extends ChangeNotifier {
     String? patientComplaints,
     String? patientDateAccident,
     String? patientTimeAccident,
+    String? driverType,
+    String? licence,
+    String? transportation,
+    String? reasonReferral,
+    String? requestTreatment,
+    String? requestSpeciality,
     List<String>? fileUrlList,
   }) {
     //ensure that only non null values were added
@@ -88,9 +94,26 @@ class ReferralProvider extends ChangeNotifier {
     }
     if(patientTimeAccident!=null){
       referralData['patientTimeAccident'] = patientTimeAccident;
-    }if(fileUrlList!=null){
+    }
+    if(fileUrlList!=null){
       referralData['fileUrlList'] = fileUrlList;
     }
+    if(driverType!=null){
+      referralData['driverType'] = driverType;
+    }
+    if(licence!=null){
+      referralData['licence'] = licence;
+    }
+    if(transportation!=null){
+      referralData['tranportation'] = transportation;
+    }
+    if(requestTreatment!=null){
+      referralData['requestTreatment'] = requestTreatment;
+    }
+    if(requestSpeciality!=null){
+      referralData['requestSpeciality'] = requestSpeciality;
+    }
+
     notifyListeners();
   }
 

@@ -133,11 +133,12 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: _scaffoldMessengerKey,
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Upload Referral'),
+          title: Text('Please attach a referral letter / memor or imaging film/test results',style: TextStyle(fontSize: 12),),
         ),
         body: Padding(
           padding: const EdgeInsets.all(5.0),

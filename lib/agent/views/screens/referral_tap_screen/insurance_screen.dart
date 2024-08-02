@@ -65,6 +65,7 @@ class _InsuranceScreenState extends State<InsuranceScreen> with AutomaticKeepAli
                 ],
               ),
             SizedBox(height: 20,),
+            Text(style: TextStyle(fontSize: 12,color: Colors.red),'**For self-transport, bed is reserved up to 4 hours after referral is accepted by the specialist.'),
             DropdownButtonFormField(hint: Text('Requested Bed'),items: _bedOption.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem(child: Text(value),value: value,);
             }).toList(), onChanged: (value) {
