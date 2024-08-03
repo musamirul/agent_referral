@@ -37,27 +37,41 @@ class PackageDetail extends StatelessWidget {
               centerTitle: true,
               backgroundColor: Colors.blue,
             ),
-            body: CachedNetworkImage(
-              imageUrl: data['image'],
-              imageBuilder: (context, imageProvider)  => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 650,
+                    width: double.infinity,
+                    child: CachedNetworkImage(
+                      imageUrl: data['image'],
+                      imageBuilder: (context, imageProvider)  => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => Shimmer(
+                        duration: Duration(seconds: 2), // Default value
+                        color: Colors.grey, // Default value
+                        colorOpacity: 0.3, // Default value
+                        enabled: true, // Default value
+                        direction: ShimmerDirection.fromLTRB(),
+                        child: Container(
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(data['description']),
+                  ),
+                ],
               ),
-              placeholder: (context, url) => Shimmer(
-                duration: Duration(seconds: 2), // Default value
-                color: Colors.grey, // Default value
-                colorOpacity: 0.3, // Default value
-                enabled: true, // Default value
-                direction: ShimmerDirection.fromLTRB(),
-                child: Container(
-                  color: Colors.grey[300],
-                ),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           );
         }
