@@ -1,3 +1,4 @@
+import 'package:agent_referral/admin/admin_main_screen.dart';
 import 'package:agent_referral/agent/models/agent_user_models.dart';
 import 'package:agent_referral/agent/views/agent_main_screen.dart';
 import 'package:agent_referral/agent/views/auth/agent_registration_screen.dart';
@@ -29,11 +30,15 @@ class LandingScreen extends StatelessWidget {
           if (!snapshot.data!.exists) {
             return AgentRegistrationScreen();
           }
+          if(_auth.currentUser!.uid == 'LNWnCehzNDgouLiw6DcN3TqQwHB3') {
+            return AdminMainScreen();
+          }
           AgentUserModel agentUserModel = AgentUserModel.fromJson(
               snapshot.data!.data()! as Map<String, dynamic>);
 
           if (agentUserModel.approved == true) {
             return AgentMainScreen();
+
           } else
             return Center(
               child: Padding(
