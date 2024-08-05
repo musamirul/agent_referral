@@ -8,6 +8,7 @@ class AdminDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(appBar: AppBar(
+      backgroundColor: Colors.blue,
       leading: IconButton(icon: Icon(Icons.logout), onPressed: () {
         _auth.signOut();
       },),

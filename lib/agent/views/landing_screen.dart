@@ -27,11 +27,11 @@ class LandingScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Text("Loading");
           }
-          if (!snapshot.data!.exists) {
-            return AgentRegistrationScreen();
-          }
           if(_auth.currentUser!.uid == 'LNWnCehzNDgouLiw6DcN3TqQwHB3') {
             return AdminMainScreen();
+          }
+          if (!snapshot.data!.exists) {
+            return AgentRegistrationScreen();
           }
           AgentUserModel agentUserModel = AgentUserModel.fromJson(
               snapshot.data!.data()! as Map<String, dynamic>);
