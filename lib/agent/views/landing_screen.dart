@@ -33,6 +33,7 @@ class LandingScreen extends StatelessWidget {
           if (!snapshot.data!.exists) {
             return AgentRegistrationScreen();
           }
+
           AgentUserModel agentUserModel = AgentUserModel.fromJson(
               snapshot.data!.data()! as Map<String, dynamic>);
 
