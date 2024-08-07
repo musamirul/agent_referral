@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:agent_referral/admin/controller/admin_package_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -56,6 +57,7 @@ class _PackageCreateScreenState extends State<PackageCreateScreen> {
         label: Text('Browse Gallery'));
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -73,7 +75,17 @@ class _PackageCreateScreenState extends State<PackageCreateScreen> {
                 onChanged: (value) {
                   title = value;
                 },
-                decoration: InputDecoration(label: Text('Title')),
+                decoration: InputDecoration(fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  labelText: 'Enter Title',
+                  labelStyle: GoogleFonts.getFont("Nunito Sans",
+                      fontSize: 14, letterSpacing: 0.1),
+                  prefixIcon: Icon(Icons.title),
+                ),
                 style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
               ),
               SizedBox(
@@ -82,7 +94,7 @@ class _PackageCreateScreenState extends State<PackageCreateScreen> {
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(colors: [Colors.red.shade100,Colors.blue.shade200])
+                    gradient: LinearGradient(colors: [Colors.yellow.shade300,Colors.orange.shade300])
                 ),
                 height: 300,
                 width: double.infinity,
@@ -93,7 +105,15 @@ class _PackageCreateScreenState extends State<PackageCreateScreen> {
               TextFormField(
                 maxLength: 800,
                 maxLines: 4,
-                decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),label: Text('Description')),
+                decoration: InputDecoration(fillColor: Colors.white,
+                  filled: true,border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  labelText: 'Enter Package Description',
+                  labelStyle: GoogleFonts.getFont("Nunito Sans",
+                      fontSize: 14, letterSpacing: 0.1),
+                  prefixIcon: Icon(Icons.description),),
                 onChanged: (value) {
                   description = value;
                 },
@@ -106,9 +126,9 @@ class _PackageCreateScreenState extends State<PackageCreateScreen> {
                 },
               ),
               SizedBox(height: 10,),
-              ElevatedButton.icon(onPressed: () {
+              ElevatedButton.icon(style: ElevatedButton.styleFrom(backgroundColor: Colors.brown, fixedSize: Size(300, 30)),onPressed: () {
                 _savePackageDetail();
-              }, icon: Icon(Icons.add), label: Text('Add Package'))
+              }, icon: Icon(Icons.add,color: Colors.white), label: Text('Add Package',style: TextStyle(color: Colors.white),))
 
             ]),
           ),

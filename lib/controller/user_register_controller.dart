@@ -11,8 +11,8 @@ class UserController{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //FUNCTION TO STORE IMAGE IN FIREBASE STORAGE
-  _uploadUserImageToStorage(Uint8List? image) async{
-    Reference ref = _storage.ref().child('storeImages').child(_auth.currentUser!.uid);
+  _uploadUserImageToStorage(Uint8List? image,String userId) async{
+    Reference ref = _storage.ref().child('storeImages').child(userId);
     UploadTask uploadTask = ref.putData(image!);
     TaskSnapshot snapshot = await uploadTask;
     String downloadUrl = await snapshot.ref.getDownloadURL();
@@ -38,25 +38,30 @@ class UserController{
       String phoneNumber,
       String icNumber,
       String agentNumber,
-      String agentOption,
       String insuranceOption,
+      String userType,
+      String password,
       Uint8List? image,
       ) async
   {
     String res = 'some error occured';
-    String storeImage = await _uploadUserImageToStorage(image);
+
+    //Create the new user
+    UserCredential cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    //SAVE IMAGE TO STORAGE
+    String storeImage = await _uploadUserImageToStorage(image, cred.user!.uid);
     //SAVE DATA TO CLOUD FIRESTORE
-    await _firestore.collection('users').doc(_auth.currentUser!.uid).set({
+    await _firestore.collection('users').doc(cred.user!.uid).set({
       'fullName':fullName,
       'email':email,
       'phoneNumber':phoneNumber,
       'icNumber':icNumber,
       'agentNumber':agentNumber,
-      'agentOption': agentOption,
       'insuranceOption':insuranceOption,
       'image':storeImage,
       'approved':false,
-      'userId': _auth.currentUser!.uid,
+      'userType' : userType,
+      'userId': cred.user!.uid,
     });
     return res;
   }
@@ -64,20 +69,25 @@ class UserController{
   Future<String> registerUser(
       String fullName,
       String email,
-      String phoneNumber,
+      String userType,
+      String password,
       Uint8List? image,
       ) async
   {
     String res = 'some error occured';
-    String storeImage = await _uploadUserImageToStorage(image);
+
+    //Create the new user
+    UserCredential cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    //SAVE IMAGE TO STORAGE
+    String storeImage = await _uploadUserImageToStorage(image, cred.user!.uid);
     //SAVE DATA TO CLOUD FIRESTORE
-    await _firestore.collection('users').doc(_auth.currentUser!.uid).set({
+    await _firestore.collection('users').doc(cred.user!.uid).set({
       'fullName':fullName,
       'email':email,
-      'phoneNumber':phoneNumber,
       'image':storeImage,
       'approved':false,
-      'userId': _auth.currentUser!.uid,
+      'userType':userType,
+      'userId': cred.user!.uid,
     });
     return res;
   }

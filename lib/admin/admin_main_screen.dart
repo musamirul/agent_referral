@@ -20,7 +20,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
     AdminPackageScreen(),
     AdminDoctorScreen(),
     AgentRegisteredScreen(),
-    UserRegisteredScreen(),
+    // UserRegisteredScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,8 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.image),label: 'Package'),
           BottomNavigationBarItem(icon: Icon(Icons.local_hospital),label: 'Doctor'),
-          BottomNavigationBarItem(icon: Icon(Icons.list),label: 'Agent'),
-          BottomNavigationBarItem(icon: Icon(Icons.add),label: 'User')
+          BottomNavigationBarItem(icon: Icon(Icons.list),label: 'Users'),
+          // BottomNavigationBarItem(icon: Icon(Icons.add),label: 'User')
       ],
       ),
       body: _pages[_pageIndex],

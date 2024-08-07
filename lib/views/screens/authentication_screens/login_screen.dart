@@ -1,6 +1,7 @@
-import 'package:agent_referral/agent/views/landing_screen.dart';
+
 import 'package:agent_referral/controller/auth_controller.dart';
 import 'package:agent_referral/utils/show_snackBar.dart';
+import 'package:agent_referral/views/landing_screen.dart';
 import 'package:agent_referral/views/screens/authentication_screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

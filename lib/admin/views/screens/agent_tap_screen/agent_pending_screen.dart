@@ -11,7 +11,7 @@ class AgentPendingScreen extends StatefulWidget {
 class _AgentPendingScreenState extends State<AgentPendingScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Stream<QuerySnapshot> _agentStream =
-      FirebaseFirestore.instance.collection('agents').where('approved',isEqualTo: false).snapshots();
+      FirebaseFirestore.instance.collection('users').where('approved',isEqualTo: false).snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class _AgentPendingScreenState extends State<AgentPendingScreen> {
           return Text("Loading");
         }
 
-        return snapshot.data!.docs.length == 0 ? Center(child: Text('No pending agent for approval'),):ListView.builder(
+        return snapshot.data!.docs.length == 0 ? Center(child: Text('No pending users for approval'),):ListView.builder(
           shrinkWrap: true,
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (BuildContext context, int index) {
@@ -35,9 +35,9 @@ class _AgentPendingScreenState extends State<AgentPendingScreen> {
               title: Text(agentData['fullName']),
               subtitle: Text(agentData['email']),
               trailing: agentData['approved']==false ? ElevatedButton(onPressed: () async{
-                await _firestore.collection('agents').doc(agentData['agentId']).update({'approved': true});
+                await _firestore.collection('users').doc(agentData['userId']).update({'approved': true});
               }, child: Text('Approved')): ElevatedButton(onPressed: () async{
-                await _firestore.collection('agents').doc(agentData['agentId']).update({'approved':false});
+                await _firestore.collection('users').doc(agentData['userId']).update({'approved':false});
               }, child: Text('Reject')),
             );
           },

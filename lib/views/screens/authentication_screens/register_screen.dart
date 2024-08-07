@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:agent_referral/agent/controllers/agent_register_controller.dart';
 import 'package:agent_referral/controller/user_register_controller.dart';
+
 import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String password;
   Uint8List? _image;
 
-  String? _agentOptionStatus;
-  List<String> _agentOption = ['YES', 'NO'];
   String? _insuranceOptionStatus;
   List<String> _insuranceOption = [
     'AIA',
@@ -56,10 +55,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   _saveUserDetail() async {
     EasyLoading.show(status: 'PLEASE WAIT');
     if (_formKey.currentState!.validate()) {
-      if(_userOption=='Agent'){
+      if(_userOptionStatus=='Agent'){
         await _userController
             .registerAgent(fullName, email, phoneNumber, icNumber, agentNumber,
-            _agentOptionStatus!, _insuranceOptionStatus!, _image)
+            _insuranceOptionStatus!, _userOptionStatus!,password,_image)
             .whenComplete(
               () {
             EasyLoading.dismiss();
@@ -70,9 +69,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             });
           },
         );
-      }else if(_userOption=='Consultant'){
+
+        EasyLoading.dismiss();
+
+      }else if(_userOptionStatus=='Consultant'){
         await _userController
-            .registerUser(fullName, email, phoneNumber, _image)
+            .registerUser(fullName, email, _userOptionStatus!, password, _image)
             .whenComplete(
               () {
             EasyLoading.dismiss();
@@ -83,6 +85,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             });
           },
         );
+
+        EasyLoading.dismiss();
       }
 
     } else {
@@ -184,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       prefixIcon: Icon(Icons.person),
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 15,),
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
@@ -222,7 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 15,
                   ),
                   Align(
                     alignment: Alignment.topLeft,
@@ -259,7 +263,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: Icon(Icons.password),
                         suffixIcon: Icon(Icons.visibility)),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 15,),
                   DropdownButtonFormField(
                     decoration: InputDecoration(
                       fillColor: Colors.red.shade100,
@@ -283,11 +287,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                   ),
+
                   if(_userOptionStatus=="Agent")
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
                         children: [
+                          TextFormField(
+                            onChanged: (value) {
+                              icNumber = value;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              labelText: 'Enter IC/Passport number',
+                              labelStyle: GoogleFonts.getFont("Nunito Sans",
+                                  fontSize: 14, letterSpacing: 0.1),
+                              prefixIcon: Icon(Icons.credit_card),
+                            ),
+                          ),
+                          SizedBox(height: 10,),
+                          TextFormField(
+                            onChanged: (value) {
+                              phoneNumber = value;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              labelText: 'Enter phone number',
+                              labelStyle: GoogleFonts.getFont("Nunito Sans",
+                                  fontSize: 14, letterSpacing: 0.1),
+                              prefixIcon: Icon(Icons.phone_android),
+                            ),
+                          ),
+                          SizedBox(height: 8,),
                           Container(
                             child: DropdownButtonFormField(
                               decoration: InputDecoration(
@@ -316,7 +357,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                             ),
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: 8,),
                           TextFormField(
 
                             onChanged: (value) {
@@ -335,10 +376,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 prefixIcon: Icon(Icons.numbers),
                             ),
                           ),
+
                         ],
                       ),
                     ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 8,),
                   Stack(
                     children: [
                       InkWell(onTap: () {
@@ -346,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },child: Container(width: 350,height: 40, decoration: BoxDecoration(color: Colors.brown, borderRadius: BorderRadius.circular(10)),child: Center(child: Text('Sign Up',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)))),
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 8,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

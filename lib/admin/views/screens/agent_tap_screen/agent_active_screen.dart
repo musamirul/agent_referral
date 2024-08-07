@@ -11,7 +11,7 @@ class AgentActiveScreen extends StatefulWidget {
 class _AgentActiveScreenState extends State<AgentActiveScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Stream<QuerySnapshot> _agentStream =
-  FirebaseFirestore.instance.collection('agents').where('approved',isEqualTo: true).snapshots();
+  FirebaseFirestore.instance.collection('users').where('approved',isEqualTo: true).snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class _AgentActiveScreenState extends State<AgentActiveScreen> {
               title: Text(agentData['fullName']),
               subtitle: Text(agentData['email']),
               trailing: agentData['approved']==false ? ElevatedButton(onPressed: () async{
-                await _firestore.collection('agents').doc(agentData['agentId']).update({'approved': true});
+                await _firestore.collection('users').doc(agentData['userId']).update({'approved': true});
               }, child: Text('Approved')): ElevatedButton(onPressed: () async{
-                await _firestore.collection('agents').doc(agentData['agentId']).update({'approved':false});
+                await _firestore.collection('users').doc(agentData['userId']).update({'approved':false});
               }, child: Text('Reject')),
             );
           },
