@@ -17,13 +17,16 @@ class _AdminPackageScreenState extends State<AdminPackageScreen> {
       length: 2,
       child: Scaffold(
        appBar: AppBar(
-         title: Center(child: Text('Package Management', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
+         title: Padding(
+           padding: const EdgeInsets.only(top: 25),
+           child: Center(child: Text('Package Management', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
+         ),
          backgroundColor: Colors.orange.shade400,
          elevation: 0,
          bottom: TabBar(
            tabs: [
              Tab(child: Text('Create Package',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
-             Tab(child: Text('Package List',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1,)),),
+             Tab(child: Text('Package List',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1,),),),
            ],
          ),
        ),
