@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -8,7 +9,7 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    CollectionReference users = FirebaseFirestore.instance.collection('agents');
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return FutureBuilder<DocumentSnapshot>(
       future: users.doc(_auth.currentUser!.uid).get(),
@@ -27,15 +28,12 @@ class AccountScreen extends StatelessWidget {
           snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                'Profile',
-                style: TextStyle(
-                    letterSpacing: 2,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Center(child: Text('Profile', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
               ),
+              backgroundColor: Colors.orange.shade400,
               centerTitle: true,
-              backgroundColor: Colors.blue,
               elevation: 2,
               actions: [
                 Padding(padding: EdgeInsets.all(8), child: Icon(Icons.star))

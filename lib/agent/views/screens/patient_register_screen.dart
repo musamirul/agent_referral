@@ -8,6 +8,7 @@ import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,35 +22,40 @@ class PatientRegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ReferralProvider _referralProvider = Provider.of<ReferralProvider>(context);
     return DefaultTabController(
-        length: 5,
+        length: 4,
         child: Form(
           key: _formKey,
           child: Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.blue.shade500,
+              automaticallyImplyLeading: false,
+              title: Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Center(child: Text('Create Referral', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
+              ),
+              backgroundColor: Colors.orange.shade400,
               elevation: 0,
               bottom: TabBar(
                 tabs: [
+                  // Tab(
+                  //   child: Text('Agent'),
+                  // ),
                   Tab(
-                    child: Text('Agent'),
+                    child: Text('Patient',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),
                   ),
                   Tab(
-                    child: Text('Patient'),
+                    child: Text('Ins',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),
                   ),
                   Tab(
-                    child: Text('Ins'),
+                    child: Text('Reason',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),
                   ),
                   Tab(
-                    child: Text('Reason'),
-                  ),
-                  Tab(
-                    child: Text('Upload'),
+                    child: Text('Upload',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),
                   ),
                 ],
               ),
             ),
             body: TabBarView(children: [
-              ReferringPersonScreen(),
+              // ReferringPersonScreen(),
               PatientFamilyScreen(),
               InsuranceScreen(),
               ReasonScreen(),
@@ -57,8 +63,8 @@ class PatientRegisterScreen extends StatelessWidget {
             ]),
             bottomSheet: Padding(
               padding: EdgeInsets.all(8),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.blue),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.brown, fixedSize: Size(300, 30),),
                 onPressed: () async{
                   if(_formKey.currentState!.validate()){
                     final referralId = Uuid().v4();
@@ -66,11 +72,11 @@ class PatientRegisterScreen extends StatelessWidget {
                       'agentId' : _auth.currentUser!.uid,
                       'referralId' :referralId,
                       'status':'Pending',
-                      'referralPerson':_referralProvider.referralData['referralPerson'],
-                      'referralName':_referralProvider.referralData['referralName'],
-                      'referralLocation':_referralProvider.referralData['referralLocation'],
-                      'referralAddress':_referralProvider.referralData['referralAddress'],
-                      'referralEmail':_referralProvider.referralData['referralEmail'],
+                      // 'referralPerson':_referralProvider.referralData['referralPerson'],
+                      // 'referralName':_referralProvider.referralData['referralName'],
+                      // 'referralLocation':_referralProvider.referralData['referralLocation'],
+                      // 'referralAddress':_referralProvider.referralData['referralAddress'],
+                      // 'referralEmail':_referralProvider.referralData['referralEmail'],
                       'patientName':_referralProvider.referralData['patientName'],
                       'patientIc':_referralProvider.referralData['patientIc'],
                       'patientNationality':_referralProvider.referralData['patientNationality'],
@@ -86,6 +92,7 @@ class PatientRegisterScreen extends StatelessWidget {
                       'patientComplaints':_referralProvider.referralData['patientComplaints'],
                       'patientDateAccident':_referralProvider.referralData['patientDateAccident'],
                       'patientTimeAccident':_referralProvider.referralData['patientTimeAccident'],
+                      'doctorAttending' :'empty',
                       'fileUrlList':_referralProvider.referralData['fileUrlList'],
                     }).whenComplete(() {
                       _referralProvider.clearData();
@@ -95,7 +102,8 @@ class PatientRegisterScreen extends StatelessWidget {
                     },);
                   }
                 },
-                child: Text('Create Referral'),
+                icon: Icon(Icons.add,color: Colors.white),
+                label: Text('Create Referral', style: TextStyle(color: Colors.white),),
               ),
             ),
           ),

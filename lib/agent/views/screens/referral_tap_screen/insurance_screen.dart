@@ -29,53 +29,55 @@ class _InsuranceScreenState extends State<InsuranceScreen> with AutomaticKeepAli
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            DropdownButtonFormField(hint: Text('Self Pay?'),items: _payOption.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem(child: Text(value),value: value,);
-            }).toList(), onChanged: (value) {
-              setState(() {
-                selfPay = value;
-                _referralProvider.getFormData(patientPayment: value);
-              });
-
-            },),
-            SizedBox(height: 20,),
-            if(selfPay=='NO')
-              Column(
-                children: [
-                  DropdownButtonFormField(hint: Text('Select Insurance Type'),items: _insuranceOption.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem(child: Text(value),value: value,);
-                  }).toList(), onChanged: (value) {
-                    insuranceType = value;
-                    _referralProvider.getFormData(patientIns: value);
-                  },),
-                  TextFormField(
-                    onChanged: (value) {
-                      _referralProvider.getFormData(patientInsNumber: value);
-                    },
-                    decoration: InputDecoration(label: Text('Insurance Policy Number')),
-                  ),
-                  TextFormField(onChanged: (value) {
-                    _referralProvider.getFormData(patientPolicyPeriod: value);
-                  },decoration: InputDecoration(label: Text('Policy Period')),
-                  ),
-                ],
-              ),
-            SizedBox(height: 20,),
-            Text(style: TextStyle(fontSize: 12,color: Colors.red),'**For self-transport, bed is reserved up to 4 hours after referral is accepted by the specialist.'),
-            DropdownButtonFormField(hint: Text('Requested Bed'),items: _bedOption.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem(child: Text(value),value: value,);
-            }).toList(), onChanged: (value) {
-              setState(() {
-                bed = value;
-                _referralProvider.getFormData(patientBed: value);
-              });
-            },)
-
-
-
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              DropdownButtonFormField(hint: Text('Self Pay?'),items: _payOption.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem(child: Text(value),value: value,);
+              }).toList(), onChanged: (value) {
+                setState(() {
+                  selfPay = value;
+                  _referralProvider.getFormData(patientPayment: value);
+                });
+          
+              },),
+              SizedBox(height: 20,),
+              if(selfPay=='NO')
+                Column(
+                  children: [
+                    DropdownButtonFormField(hint: Text('Select Insurance Type'),items: _insuranceOption.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem(child: Text(value),value: value,);
+                    }).toList(), onChanged: (value) {
+                      insuranceType = value;
+                      _referralProvider.getFormData(patientIns: value);
+                    },),
+                    TextFormField(
+                      onChanged: (value) {
+                        _referralProvider.getFormData(patientInsNumber: value);
+                      },
+                      decoration: InputDecoration(label: Text('Insurance Policy Number')),
+                    ),
+                    TextFormField(onChanged: (value) {
+                      _referralProvider.getFormData(patientPolicyPeriod: value);
+                    },decoration: InputDecoration(label: Text('Policy Period')),
+                    ),
+                  ],
+                ),
+              SizedBox(height: 20,),
+              Text(style: TextStyle(fontSize: 12,color: Colors.red),'**For self-transport, bed is reserved up to 4 hours after referral is accepted by the specialist.'),
+              DropdownButtonFormField(hint: Text('Requested Bed'),items: _bedOption.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem(child: Text(value),value: value,);
+              }).toList(), onChanged: (value) {
+                setState(() {
+                  bed = value;
+                  _referralProvider.getFormData(patientBed: value);
+                });
+              },)
+          
+          
+          
+            ],
+          ),
         ),
       ),
     );

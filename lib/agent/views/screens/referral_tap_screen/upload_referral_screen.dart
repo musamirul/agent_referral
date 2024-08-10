@@ -2,13 +2,12 @@ import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
-import 'package:provider/provider.dart'; // Make sure to import the provider package
- // Import your ReferralProvider class
+import 'package:provider/provider.dart';
 
 class UploadReferralScreen extends StatefulWidget {
   @override
@@ -43,12 +42,12 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
     try {
       _directoryPath = null;
       _paths = (await FilePicker.platform.pickFiles(
-        compressionQuality: 30,
         allowMultiple: _multiPick,
         onFileLoading: (FilePickerStatus status) => print(status),
         allowedExtensions: (_extension?.isNotEmpty ?? false)
             ? _extension?.replaceAll(' ', '').split(',')
             : null,
+        type: _extension == null ? FileType.any : FileType.custom,
       ))?.files;
 
       if (_paths != null) {
@@ -78,20 +77,17 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
     EasyLoading.show(status: 'Saving Document');
     try {
       for (var file in _files) {
-        Reference ref = _storage.ref().child('patientDocument').child(Uuid().v4());
+        Reference ref = _storage.ref().child('patientDocument/${Uuid().v4()}');
+        UploadTask uploadTask = ref.putFile(file);
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String fileURL = await taskSnapshot.ref.getDownloadURL();
 
-        await ref.putFile(file).whenComplete(() async {
-          await ref.getDownloadURL().then((value) {
-            setState(() {
-              _fileUrlList.add(value);
-            });
-          });
+        setState(() {
+          _fileUrlList.add(fileURL);
         });
       }
-      setState(() {
-        _referralProvider.getFormData(fileUrlList: _fileUrlList);
-        EasyLoading.dismiss();
-      });
+      _referralProvider.getFormData(fileUrlList: _fileUrlList);
+      EasyLoading.dismiss();
       _showMessage('Files uploaded successfully!');
     } catch (e) {
       EasyLoading.dismiss();
@@ -105,14 +101,12 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
   }
 
   void _showMessage(String message) {
-    _scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-    _scaffoldMessengerKey.currentState?.showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -138,7 +132,10 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Please attach a referral letter / memor or imaging film/test results',style: TextStyle(fontSize: 12),),
+          title: Text(
+            'Please attach a referral letter / memo or imaging film/test results',
+            style: TextStyle(fontSize: 12),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(5.0),
@@ -194,6 +191,7 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
                       SizedBox(
                         width: 120,
                         child: FloatingActionButton.extended(
+                          heroTag: "btn1",
                           onPressed: _pickFiles,
                           label: Text(_multiPick ? 'Pick files' : 'Pick file'),
                           icon: const Icon(Icons.description),
@@ -202,6 +200,7 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> {
                       SizedBox(
                         width: 120,
                         child: FloatingActionButton.extended(
+                          heroTag: "btn2",
                           onPressed: _uploadFiles,
                           label: const Text('Save'),
                           icon: const Icon(Icons.save),

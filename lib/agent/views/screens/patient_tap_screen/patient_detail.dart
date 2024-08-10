@@ -14,8 +14,8 @@ class PatientDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    CollectionReference patient =
-    FirebaseFirestore.instance.collection('referral');
+    CollectionReference patient = FirebaseFirestore.instance.collection('referral');
+
     return FutureBuilder<DocumentSnapshot>(
       future: patient.doc(referralId).get(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -28,8 +28,7 @@ class PatientDetail extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-          snapshot.data!.data() as Map<String, dynamic>;
+          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
           List<String> urls = List<String>.from(data['fileUrlList']);
 
           return Scaffold(
@@ -37,9 +36,10 @@ class PatientDetail extends StatelessWidget {
               title: Text(
                 'Patient Detail',
                 style: TextStyle(
-                    letterSpacing: 2,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                  letterSpacing: 2,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               centerTitle: true,
               backgroundColor: Colors.blue,
@@ -71,7 +71,7 @@ class PatientDetail extends StatelessWidget {
                   Text('Patient & Family Information'),
                   ListTile(
                     leading: Icon(Icons.phone),
-                    title: Text(data['patientPhone'], style: TextStyle()),
+                    title: Text(data['patientPhone']),
                   ),
                   ListTile(
                     leading: Icon(Icons.flag),
@@ -85,8 +85,7 @@ class PatientDetail extends StatelessWidget {
                     leading: Icon(Icons.home),
                     title: Text(data['patientAddress']),
                   ),
-                  if (data['patientPayment'] == "NO")
-                    Divider(thickness: 2, color: Colors.grey.shade200),
+                  Divider(thickness: 2, color: Colors.grey.shade200),
                   Text('Insurance Information'),
                   ListTile(
                     leading: Icon(Icons.health_and_safety),
@@ -104,19 +103,16 @@ class PatientDetail extends StatelessWidget {
                   Text('Reason For Referral'),
                   Column(
                     children: [
-                      Text('Date Accident / Injury : ' +
+                      Text('Date Accident / Injury: ' +
                           data['patientDateAccident'] +
                           ' ' +
-                          data['patientTimeAccident'])
+                          data['patientTimeAccident']),
                     ],
                   ),
                   Divider(thickness: 2, color: Colors.grey.shade200),
                   Text('Patient Document'),
                   ElevatedButton(
-                    //onPressed: () => downloadAllFiles(urls, context),
-                    onPressed: () {
-
-                    },
+                    onPressed: () => downloadAllFiles(urls, context),
                     child: Text('Download All Documents'),
                   ),
                   ListView.builder(
@@ -125,15 +121,12 @@ class PatientDetail extends StatelessWidget {
                     itemCount: urls.length,
                     itemBuilder: (context, index) {
                       String url = urls[index];
-                      String fileName = url;
+                      String fileName = url.split('/').last;
                       return ListTile(
-                        title: Text(fileName,maxLines: 2,),
+                        title: Text(fileName, maxLines: 2),
                         trailing: IconButton(
                           icon: Icon(Icons.download),
-                          onPressed: () {
-
-                          },
-                          //onPressed: () => downloadFile(url, fileName, context),
+                          onPressed: () => downloadFile(url, fileName, context),
                         ),
                       );
                     },
@@ -149,30 +142,37 @@ class PatientDetail extends StatelessWidget {
     );
   }
 
-//   Future<void> downloadFile(String url, String fileName, BuildContext context) async {
-//     try {
-//       final status = await Permission.storage.request();
-//       if (status.isGranted) {
-//         final directory = await getExternalStorageDirectory();
-//         final filePath = '${directory!.path}/$fileName';
-//         final file = File(filePath);
-//
-//         final ref = FirebaseStorage.instance.refFromURL(url);
-//         await ref.writeToFile(file);
-//
-//         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Downloaded $fileName')));
-//       } else {
-//         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Permission denied')));
-//       }
-//     } catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to download file: $e')));
-//     }
-//   }
-//
-//   Future<void> downloadAllFiles(List<String> urls, BuildContext context) async {
-//     for (String url in urls) {
-//       String fileName = url.split('/').last;
-//       await downloadFile(url, fileName, context);
-//     }
-//   }
- }
+  Future<void> downloadFile(String url, String fileName, BuildContext context) async {
+    try {
+      final status = await Permission.storage.request();
+      if (status.isGranted) {
+        final directory = await getExternalStorageDirectory();
+        final filePath = '${directory!.path}/$fileName';
+        final file = File(filePath);
+
+        final ref = FirebaseStorage.instance.refFromURL(url);
+        await ref.writeToFile(file);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Downloaded $fileName')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Permission denied')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to download file: $e')),
+      );
+    }
+  }
+
+  Future<void> downloadAllFiles(List<String> urls, BuildContext context) async {
+    for (String url in urls) {
+      String fileName = url.split('/').last;
+      await downloadFile(url, fileName, context);
+      print(fileName);
+    }
+  }
+}

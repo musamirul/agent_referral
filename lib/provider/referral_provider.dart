@@ -6,11 +6,11 @@ class ReferralProvider extends ChangeNotifier {
 
   //this method will be used to update the product related fields
   getFormData({
-    String? referralPerson,
-    String? referralName,
-    String? referralLocation,
-    String? referralAddress,
-    String? referralEmail,
+    // String? referralPerson,
+    // String? referralName,
+    // String? referralLocation,
+    // String? referralAddress,
+    // String? referralEmail,
     String? patientName,
     String? patientIc,
     String? patientNationality,
@@ -35,21 +35,21 @@ class ReferralProvider extends ChangeNotifier {
     List<String>? fileUrlList,
   }) {
     //ensure that only non null values were added
-    if(referralPerson!=null){
-      referralData['referralPerson'] = referralPerson;
-    }
-    if(referralName!=null){
-      referralData['referralName'] = referralName;
-    }
-    if(referralLocation!=null){
-      referralData['referralLocation'] = referralLocation;
-    }
-    if(referralAddress!=null){
-      referralData['referralAddress'] = referralAddress;
-    }
-    if(referralEmail!=null){
-      referralData['referralEmail'] = referralEmail;
-    }
+    // if(referralPerson!=null){
+    //   referralData['referralPerson'] = referralPerson;
+    // }
+    // if(referralName!=null){
+    //   referralData['referralName'] = referralName;
+    // }
+    // if(referralLocation!=null){
+    //   referralData['referralLocation'] = referralLocation;
+    // }
+    // if(referralAddress!=null){
+    //   referralData['referralAddress'] = referralAddress;
+    // }
+    // if(referralEmail!=null){
+    //   referralData['referralEmail'] = referralEmail;
+    // }
     if(patientName!=null){
       referralData['patientName'] = patientName;
     }
