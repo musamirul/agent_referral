@@ -46,6 +46,7 @@ class _PackageInfoScreenState extends State<PackageInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(child: Text('Package List', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 20),)),
       ),
       body: Padding(

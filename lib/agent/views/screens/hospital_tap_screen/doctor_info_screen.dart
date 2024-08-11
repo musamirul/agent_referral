@@ -64,6 +64,7 @@ class _DoctorInfoScreenState extends State<DoctorInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: CupertinoSearchTextField(
           controller: _searchController,
