@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class PackageInfoScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _PackageInfoScreenState extends State<PackageInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Package List'),
+        title: Center(child: Text('Package List', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 20),)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

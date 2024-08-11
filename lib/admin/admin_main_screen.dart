@@ -1,5 +1,6 @@
 import 'package:agent_referral/admin/views/screens/admin_dashboard_screen.dart';
 import 'package:agent_referral/admin/views/screens/admin_doctor_screen.dart';
+import 'package:agent_referral/admin/views/screens/admin_feedback_screen.dart';
 import 'package:agent_referral/admin/views/screens/admin_package_screen.dart';
 import 'package:agent_referral/admin/views/screens/agent_registered_screen.dart';
 import 'package:agent_referral/admin/views/screens/user_registered_screen.dart';
@@ -20,6 +21,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
     AdminPackageScreen(),
     AdminDoctorScreen(),
     AgentRegisteredScreen(),
+    AdminFeedbackScreen(),
     // UserRegisteredScreen(),
   ];
   @override
@@ -40,6 +42,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.image),label: 'Package'),
           BottomNavigationBarItem(icon: Icon(Icons.local_hospital),label: 'Doctor'),
           BottomNavigationBarItem(icon: Icon(Icons.list),label: 'Users'),
+          BottomNavigationBarItem(icon: Icon(Icons.feed_rounded),label: 'Feedback'),
           // BottomNavigationBarItem(icon: Icon(Icons.add),label: 'User')
       ],
       ),

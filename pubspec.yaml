@@ -54,6 +54,8 @@ dependencies:
   shimmer_animation: ^2.1.0+1
   mailer: ^6.1.2
   google_fonts: 6.1.0
+  gradient_icon: ^2.0.9
+  dio: ^5.5.0+1
 
 dev_dependencies:
   flutter_test:

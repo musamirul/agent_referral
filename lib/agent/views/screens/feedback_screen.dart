@@ -154,6 +154,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
@@ -186,9 +187,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       final feedbackId = Uuid().v4();
       await _firestore.collection('feedback').doc(feedbackId).set({
         'agentId': _auth.currentUser!.uid,
+        'agentEmail' : _auth.currentUser!.email,
         'feedback': feedback,
         'title': feedbackTitle.text,
         'description': feedbackDescription.text,
+        'status': 'Pending',
       }).whenComplete(() {
         feedbackTitle.clear();
         feedbackDescription.clear();
@@ -204,8 +207,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     final smtpServer = gmail(username, password);
 
     final message = Message()
-      ..from = Address(username, 'Your Name')
-      ..recipients.add('recipient@example.com')  // Recipient email
+      ..from = Address(username, 'ameirul')
+      ..recipients.add('musamirul123@gmail.com')  // Recipient email
       ..subject = 'New Feedback Submitted: $feedbackId'
       ..text = 'Feedback Type: $feedback\n'
           'Title: ${feedbackTitle.text}\n'
@@ -225,9 +228,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
-        title: Text('Feedback Form'),
-        backgroundColor: Colors.blue,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: Center(child: Text('Feedback Form', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
+        ),
+        backgroundColor: Colors.orange.shade400,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -237,6 +244,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             child: Column(
               children: [
                 DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    labelStyle: GoogleFonts.getFont("Nunito Sans",
+                        fontSize: 14, letterSpacing: 0.1),
+                  ),
                   hint: Text('Select Feedback'),
                   items: _feedbackOption.map<DropdownMenuItem<String>>((value) {
                     return DropdownMenuItem(value: value, child: Text(value));
@@ -257,8 +274,19 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       return null;
                     }
                   },
-                  decoration: InputDecoration(label: Text('Feedback Title')),
-                ),
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    prefixIcon: Icon(Icons.house),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    labelText: 'Feedback Title',
+                    labelStyle: GoogleFonts.getFont("Nunito Sans",
+                        fontSize: 14, letterSpacing: 0.1),
+                  ),
+                  ),
                 SizedBox(
                   height: 20,
                 ),
@@ -274,16 +302,25 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   maxLines: 8,
                   maxLength: 800,
                   decoration: InputDecoration(
-                      label: Text('Description'),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    labelText: 'Feedback Description',
+                    labelStyle: GoogleFonts.getFont("Nunito Sans",
+                        fontSize: 14, letterSpacing: 0.1),
+                  ),
                 ),
                 SizedBox(height: 30,),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     saveFeedback();
                   },
-                  child: Text('Save Feedback'),
+                  icon: Icon(Icons.save,color: Colors.white),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown, fixedSize: Size(300, 30),),
+                  label: Text('Save Feedback', style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),

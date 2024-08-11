@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class PackageDetail extends StatelessWidget {
@@ -27,15 +28,12 @@ class PackageDetail extends StatelessWidget {
           snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                data['name'],
-                style: TextStyle(
-                    letterSpacing: 2,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Center(child: Text(data['name'], style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
               ),
+              backgroundColor: Colors.orange.shade400,
               centerTitle: true,
-              backgroundColor: Colors.blue,
             ),
             body: SingleChildScrollView(
               child: Column(

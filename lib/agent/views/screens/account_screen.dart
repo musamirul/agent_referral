@@ -47,7 +47,7 @@ class AccountScreen extends StatelessWidget {
                 Center(
                   child: CircleAvatar(
                     radius: 64,
-                    backgroundColor: Colors.red.shade600,
+                    backgroundColor: Colors.orange.shade300,
                     backgroundImage: NetworkImage(data['image']),
                   ),
                 ),

@@ -15,17 +15,20 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
   Widget build(BuildContext context) {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    final Stream<QuerySnapshot> _usersStream =
-    FirebaseFirestore.instance.collection('referral').where("agentId",isEqualTo: _auth.currentUser!.uid).where("status",isEqualTo: "Completed").snapshots();
+    final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+        .collection('referral')
+        .where("agentId", isEqualTo: _auth.currentUser!.uid)
+        .where("status", isEqualTo: "Completed")
+        .snapshots();
     return StreamBuilder<QuerySnapshot>(
       stream: _usersStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return Center(child: Text('Something went wrong'));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return Center(child: Text("Loading"));
         }
 
         return ListView.builder(
@@ -34,22 +37,34 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           itemBuilder: (context, index) {
             final referralData = snapshot.data!.docs[index];
             return InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) {
-                      return PatientDetail(referralId: referralData['referralId']);
-                    },)
-                );
+              onTap: () async {
+                await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return PatientDetail(
+                        referralId: referralData['referralId']);
+                  },
+                ));
               },
               child: Padding(
-                padding: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(
+                      color: Colors.yellow.shade200,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 10,
+                            spreadRadius: 0.1,
+                            offset: Offset(4, 5),
+                            blurStyle: BlurStyle.normal)
+                      ]),
                   child: ListTile(
-                    title: Text(referralData['patientName'] + " ("+referralData['patientIc']+") "),
-                    subtitle: Text(referralData['patientPhone']),
-                    hoverColor: Colors.blue,
-                    focusColor: Colors.blue,
+                      title: Text(referralData['patientName']),
+                      subtitle: Text(referralData['patientIc']),
+                      hoverColor: Colors.blue,
+                      focusColor: Colors.blue,
+                      trailing: Icon(Icons.done_all)
                   ),
                 ),
               ),

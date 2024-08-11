@@ -45,6 +45,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Consultant',
   ];
 
+  bool _passwordVisible = true;
+
+  @override
+  void initState() {
+    _passwordVisible = false;
+  }
+
   selectCameraImage() async {
     Uint8List im = await _userController.pickStoreImage(ImageSource.camera);
     setState(() {
@@ -239,6 +246,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   TextFormField(
+                    obscureText: _passwordVisible,
                     onChanged: (value) {
                       password = value;
                     },
@@ -261,7 +269,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         labelStyle: GoogleFonts.getFont("Nunito Sans",
                             fontSize: 14, letterSpacing: 0.1),
                         prefixIcon: Icon(Icons.password),
-                        suffixIcon: Icon(Icons.visibility)),
+                        suffixIcon: IconButton(onPressed: () { setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        }); }, icon: _passwordVisible? Icon(Icons.visibility):Icon(Icons.visibility_off),)),
                   ),
                   SizedBox(height: 15,),
                   DropdownButtonFormField(

@@ -92,6 +92,12 @@ class PatientRegisterScreen extends StatelessWidget {
                       'patientComplaints':_referralProvider.referralData['patientComplaints'],
                       'patientDateAccident':_referralProvider.referralData['patientDateAccident'],
                       'patientTimeAccident':_referralProvider.referralData['patientTimeAccident'],
+                      'driverType':_referralProvider.referralData['driverType'],
+                      'licence':_referralProvider.referralData['licence'],
+                      'transportation':_referralProvider.referralData['transportation'],
+                      'reasonReferral':_referralProvider.referralData['reasonReferral'],
+                      'requestTreatment':_referralProvider.referralData['requestTreatment'],
+                      'requestSpeciality':_referralProvider.referralData['requestSpeciality'],
                       'doctorAttending' :'empty',
                       'fileUrlList':_referralProvider.referralData['fileUrlList'],
                     }).whenComplete(() {

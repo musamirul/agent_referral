@@ -19,7 +19,7 @@ class PatientRegisteredListScreen extends StatelessWidget {
         elevation: 0,
         bottom: TabBar(tabs: [
           Tab(child: Text('Pending Approval',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
-          Tab(child: Text('History',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
+          Tab(child: Text('Completed',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
         ]),
       ),
       body: TabBarView(children: [

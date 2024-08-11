@@ -24,6 +24,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false;
 
+  bool _passwordVisible = true;
+
+  @override
+  void initState() {
+    _passwordVisible = false;
+  }
+  
   _loginUser() async {
     setState(() {
       _isLoading = true;
@@ -132,6 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 TextFormField(
+                  obscureText: _passwordVisible,
                   validator: (value) {
                     if(value!.isEmpty){
                       return "Please enter your password";
@@ -150,7 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelStyle: GoogleFonts.getFont("Nunito Sans",
                           fontSize: 14, letterSpacing: 0.1),
                       prefixIcon: Icon(Icons.password),
-                      suffixIcon: Icon(Icons.visibility)),
+                      suffixIcon: IconButton(onPressed: () { setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      }); }, icon: _passwordVisible? Icon(Icons.visibility):Icon(Icons.visibility_off),)),
                 onChanged: (value) {
                   password = value;
                 },),

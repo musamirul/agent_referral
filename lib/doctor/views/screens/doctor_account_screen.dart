@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DoctorAccountScreen extends StatelessWidget {
   const DoctorAccountScreen({super.key});
@@ -28,15 +29,12 @@ class DoctorAccountScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
-              title: Text(
-                'Profile',
-                style: TextStyle(
-                    letterSpacing: 2,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Center(child: Text('Profile', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
               ),
+              backgroundColor: Colors.orange.shade400,
               centerTitle: true,
-              backgroundColor: Colors.blue,
               elevation: 2,
               actions: [
                 Padding(padding: EdgeInsets.all(8), child: Icon(Icons.star))
@@ -50,7 +48,7 @@ class DoctorAccountScreen extends StatelessWidget {
                 Center(
                   child: CircleAvatar(
                     radius: 64,
-                    backgroundColor: Colors.red.shade600,
+                    backgroundColor: Colors.orange.shade300,
                     backgroundImage: NetworkImage(data['image']),
                   ),
                 ),

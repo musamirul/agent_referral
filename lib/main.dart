@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:agent_referral/firebase_options.dart';
 import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
@@ -10,6 +12,7 @@ import 'agent/views/auth/agent_auth_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  // HttpOverrides.global = new MyHttpOverrides();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -23,6 +26,13 @@ void main() async{
     )
   );
 }
+
+// class MyHttpOverrides extends HttpOverrides {
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..badCertificateCallback =
+//           (X509Certificate cert, String host, int port) => true; }}
 
 class MyApp extends StatelessWidget{
   @override
