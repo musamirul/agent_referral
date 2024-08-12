@@ -40,50 +40,52 @@ class AccountScreen extends StatelessWidget {
                 Padding(padding: EdgeInsets.all(8), child: Icon(Icons.star))
               ],
             ),
-            body: Column(
-              children: [
-                SizedBox(
-                  height: 25,
-                ),
-                Center(
-                  child: CircleAvatar(
-                    radius: 64,
-                    backgroundColor: Colors.orange.shade300,
-                    backgroundImage: NetworkImage(data['image']),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 25,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(data['fullName'], style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(data['agentNumber']+' | ' +data['insuranceOption'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Divider(thickness: 0.7,color: Colors.grey,),
-                ),
-                ListTile(
-                  leading: Icon(Icons.email),
-                  title: Text(data['email']),
-                ),ListTile(
-                  leading: Icon(Icons.phone),
-                  title: Text(data['phoneNumber']),
-                ),
-                ListTile(
-                  leading: Icon(Icons.credit_card),
-                  title: Text(data['icNumber']),
-                ),
-                ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text('Logout'),
-                  onTap: () {
-                    _auth.signOut();
-
-                  },
-                )
-              ],
+                  Center(
+                    child: CircleAvatar(
+                      radius: 64,
+                      backgroundColor: Colors.orange.shade300,
+                      backgroundImage: NetworkImage(data['image']),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(data['fullName'], style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(data['agentNumber']+' | ' +data['insuranceOption'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Divider(thickness: 0.7,color: Colors.grey,),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.email),
+                    title: Text(data['email']),
+                  ),ListTile(
+                    leading: Icon(Icons.phone),
+                    title: Text(data['phoneNumber']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.credit_card),
+                    title: Text(data['icNumber']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Logout'),
+                    onTap: () {
+                      _auth.signOut();
+              
+                    },
+                  )
+                ],
+              ),
             ),
 
           );

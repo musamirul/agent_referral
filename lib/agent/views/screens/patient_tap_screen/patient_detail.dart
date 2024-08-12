@@ -333,6 +333,7 @@ class _PatientDetailState extends State<PatientDetail> {
         final ref = FirebaseStorage.instance.refFromURL(url);
         await ref.writeToFile(file);
 
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Downloaded $fileName')),
         );

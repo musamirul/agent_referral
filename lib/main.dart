@@ -5,6 +5,7 @@ import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,11 @@ import 'agent/views/auth/agent_auth_screen.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // HttpOverrides.global = new MyHttpOverrides();
+  // Plugin must be initialized before using
+  await FlutterDownloader.initialize(
+      debug: true, // optional: set to false to disable printing logs to console (default: true)
+      ignoreSsl: true // option: set to false to disable working with http links (default: false)
+  );
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

@@ -25,11 +25,11 @@ class _PatientPendingScreenState extends State<PatientPendingScreen> {
       stream: _usersStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return Center(child: Text('Something went wrong'));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return Center(child: Text("Loading"));
         }
 
         return snapshot.data!.docs.length == 0 ? Center(child: Text('No pending approval'),):ListView.builder(
