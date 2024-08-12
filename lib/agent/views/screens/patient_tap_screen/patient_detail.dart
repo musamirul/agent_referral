@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_icon/gradient_icon.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -315,36 +316,42 @@ class _PatientDetailState extends State<PatientDetail> {
     );
   }
 
+  Future<bool> requestStoragePermission() async {
+    var status = await Permission.storage.request();
+
+    if (status.isGranted) {
+      // Permission is granted
+      return true;
+    } else if (status.isDenied || status.isPermanentlyDenied) {
+      // Permission is denied or permanently denied, handle accordingly
+      return false;
+    }
+    return false;
+  }
+
   Future<void> downloadFile(String url, String fileName, BuildContext context) async {
-    try {
-      final status = await Permission.storage.request();
-      if (status.isGranted) {
-        final directory = await getExternalStorageDirectory();
-        final filePath = '${directory!.path}/$fileName';
-        final file = File(filePath);
+    if (await requestStoragePermission()) {
+      try {
+        final externalDir = await getTemporaryDirectory();
 
-        if (await file.exists()) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$fileName already exists, skipping download.')),
-          );
-          return;
-        }
-
-        final ref = FirebaseStorage.instance.refFromURL(url);
-        await ref.writeToFile(file);
-
+        await FlutterDownloader.enqueue(
+          url: url,
+          savedDir: externalDir.path,
+          showNotification: true,
+          openFileFromNotification: true,
+        );
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Downloaded $fileName')),
         );
-      } else {
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Permission denied')),
+          SnackBar(content: Text('Failed to download file: $e')),
         );
       }
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download file: $e')),
+        SnackBar(content: Text('Storage permission is required to download files')),
       );
     }
   }
