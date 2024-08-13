@@ -37,6 +37,7 @@ class _ReasonScreenState extends State<ReasonScreen>
           top: 20,
           left: 20,
           right: 20,
+          bottom: 70
         ),
         child: SingleChildScrollView(
           child: Column(

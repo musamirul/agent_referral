@@ -30,7 +30,7 @@ class _PatientFamilyScreenState extends State<PatientFamilyScreen>
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       body: Padding(
-        padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20),
+        padding: const EdgeInsets.only(left: 20,right: 20,bottom: 70),
         child: SingleChildScrollView(
           child: Column(
             children: [

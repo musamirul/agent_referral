@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_icon/gradient_icon.dart';
+import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -22,8 +24,9 @@ class _PatientDetailState extends State<PatientDetail> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   CollectionReference patient = FirebaseFirestore.instance.collection('referral');
   CollectionReference user = FirebaseFirestore.instance.collection('users');
-  String doctorName = "";  // Initialize the doctorName variable
+  String doctorName = "";
   bool isLoadingDoctorName = true;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(
@@ -50,7 +53,6 @@ class _PatientDetailState extends State<PatientDetail> {
             user.doc(data['doctorAttending']).get().then((value) {
               if (value.exists && value.data() != null) {
                 setState(() {
-                  // Cast value.data() to Map<String, dynamic>
                   var dataMap = value.data() as Map<String, dynamic>;
                   doctorName = dataMap['fullName'];
                   isLoadingDoctorName = false;
@@ -85,11 +87,11 @@ class _PatientDetailState extends State<PatientDetail> {
                 children: [
                   if (data['status'] == "Approved")
                     isLoadingDoctorName
-                        ? CircularProgressIndicator()  // Show loading indicator
+                        ? CircularProgressIndicator()
                         : Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Container(padding: EdgeInsets.all(10),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
-                        ),  // Show doctor name when loaded
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Container(padding: EdgeInsets.all(10),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Container(
@@ -301,8 +303,19 @@ class _PatientDetailState extends State<PatientDetail> {
             String url = urls[index];
             String fileName = url.split('/').last.split('?').first; // Handling file name from URL
             return ListTile(
-              title: Text(fileName, maxLines: 2),
-              trailing: IconButton(
+              title: GestureDetector(
+                onTap: () async {
+                  // Call your method to open the file. This could be using a PDF viewer, image viewer, or a web view.
+                  await openFileFromUrl(url, fileName);
+                },
+                child: Text(
+                  fileName,
+                  style: TextStyle(
+                    color: Colors.blue, // Makes the text look like a clickable link
+                    decoration: TextDecoration.underline, // Underlines the text
+                  ),
+                ),
+              ),trailing: IconButton(
                 icon: Icon(Icons.download),
                 onPressed: () {
                   downloadFile(url, fileName, context);
@@ -315,15 +328,40 @@ class _PatientDetailState extends State<PatientDetail> {
       ],
     );
   }
+  Future<void> openFileFromUrl(String url, String fileName) async {
+    try {
+      // Get the directory to save the file
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/$fileName');
+
+      // Download the file
+      final response = await http.get(Uri.parse(url));
+      await file.writeAsBytes(response.bodyBytes);
+
+      // Open the file
+      await openFile(file.path);
+    } catch (e) {
+      print("Error downloading or opening file: $e");
+    }
+  }
+  Future<void> openFile(String filePath) async {
+    try {
+      final result = await OpenFile.open(filePath);
+      if (result.type != ResultType.done) {
+        print("Failed to open file: ${result.message}");
+      }
+    } catch (e) {
+      print("Error opening file: $e");
+    }
+  }
 
   Future<bool> requestStoragePermission() async {
     var status = await Permission.storage.request();
 
     if (status.isGranted) {
-      // Permission is granted
       return true;
     } else if (status.isDenied || status.isPermanentlyDenied) {
-      // Permission is denied or permanently denied, handle accordingly
+      openAppSettings();
       return false;
     }
     return false;
@@ -332,18 +370,25 @@ class _PatientDetailState extends State<PatientDetail> {
   Future<void> downloadFile(String url, String fileName, BuildContext context) async {
     if (await requestStoragePermission()) {
       try {
-        final externalDir = await getTemporaryDirectory();
+        final externalDir = await getExternalStorageDirectories(type: StorageDirectory.downloads);
 
-        await FlutterDownloader.enqueue(
-          url: url,
-          savedDir: externalDir.path,
-          showNotification: true,
-          openFileFromNotification: true,
-        );
+        if (externalDir != null && externalDir.isNotEmpty) {
+          String savePath = externalDir.first.path;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Downloaded $fileName')),
-        );
+          await FlutterDownloader.enqueue(
+            url: url,
+            savedDir: savePath,
+            fileName: fileName, // Explicitly set the file name
+            showNotification: true,
+            openFileFromNotification: true,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Downloaded $fileName to $savePath')),
+          );
+        } else {
+          throw Exception('Unable to access the Downloads directory.');
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to download file: $e')),

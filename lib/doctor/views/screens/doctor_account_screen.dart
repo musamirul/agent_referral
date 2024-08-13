@@ -67,8 +67,8 @@ class DoctorAccountScreen extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.logout),
                   title: Text('Logout'),
-                  onTap: () {
-                    _auth.signOut();
+                  onTap: () async{
+                    await _auth.signOut();
 
                   },
                 )

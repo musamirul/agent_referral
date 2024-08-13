@@ -17,29 +17,34 @@ class _PackageInfoScreenState extends State<PackageInfoScreen> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  List _packageImage = [];
-  List _packageId = [];
-
-  getImageStream() async {
-    return _firestore.collection('package').get().then(
-          (QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach(
-              (doc) {
-            setState(() {
-              _packageImage.add(doc['image']);
-              _packageId.add(doc['packageId']);
-            });
-          },
-        );
-      },
-    );
-  }
+  List<String> _packageImage = [];
+  List<String> _packageId = [];
 
   @override
   void initState() {
-    // TODO: implement initState
-    getImageStream();
     super.initState();
+    getImageStream();
+  }
+
+  Future<void> getImageStream() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection('package').get();
+      List<String> imageUrls = [];
+      List<String> ids = [];
+
+      for (var doc in querySnapshot.docs) {
+        imageUrls.add(doc['image'] as String);
+        ids.add(doc['packageId'] as String);
+      }
+
+      setState(() {
+        _packageImage = imageUrls;
+        _packageId = ids;
+      });
+    } catch (e) {
+      print("Error fetching images: $e");
+      // Handle errors accordingly
+    }
   }
 
   @override
@@ -47,7 +52,17 @@ class _PackageInfoScreenState extends State<PackageInfoScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(child: Text('Package List', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 20),)),
+        title: Center(
+          child: Text(
+            'Package List',
+            style: GoogleFonts.roboto(
+              letterSpacing: 0.9,
+              fontWeight: FontWeight.w900,
+              color: Colors.brown.shade900,
+              fontSize: 20,
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -61,14 +76,13 @@ class _PackageInfoScreenState extends State<PackageInfoScreen> {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
-            return index==null? Center(
-              child: Text('No Package Available'),
-            ):InkWell(
+            return InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                  return PackageDetail(packageId: _packageId[index]);
-                },));
-
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PackageDetail(packageId: _packageId[index]),
+                  ),
+                );
               },
               child: CachedNetworkImage(
                 imageUrl: _packageImage[index],
@@ -82,10 +96,10 @@ class _PackageInfoScreenState extends State<PackageInfoScreen> {
                   ),
                 ),
                 placeholder: (context, url) => Shimmer(
-                  duration: Duration(seconds: 2), //Default value
-                  color: Colors.grey, //Default value
-                  colorOpacity: 0, //Default value
-                  enabled: true, //Default value
+                  duration: Duration(seconds: 2),
+                  color: Colors.grey,
+                  colorOpacity: 0.2,
+                  enabled: true,
                   direction: ShimmerDirection.fromLTRB(),
                   child: Container(
                     decoration: BoxDecoration(

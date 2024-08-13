@@ -1,3 +1,4 @@
+import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -79,9 +80,12 @@ class AccountScreen extends StatelessWidget {
                   ListTile(
                     leading: Icon(Icons.logout),
                     title: Text('Logout'),
-                    onTap: () {
-                      _auth.signOut();
-              
+                    onTap: () async{
+                      await _auth.signOut();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
                     },
                   )
                 ],
