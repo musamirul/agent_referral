@@ -106,8 +106,24 @@ class _ReferralGetScreenState extends State<ReferralGetScreen> {
                       focusColor: Colors.blue,
                       trailing: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.orange,),
-                        onPressed: () {
-                          _firestore.collection('referral').doc(referralData['referralId']).update({'status':'Completed'});
+                        onPressed: () async{
+                          bool confirm = await showDialog(context: context, builder: (context) {
+                            return AlertDialog(
+                              title: Text('Confirm Referral'),
+                              content: Text('Are you sure you want to Confirm this referral?'),
+                              actions: [
+                                TextButton(onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                }, child: Text('Cancel'),),
+                                ElevatedButton(onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                }, child: Text('Completed')),
+                              ],
+                            );
+                          },);
+                          if(confirm){
+                            _firestore.collection('referral').doc(referralData['referralId']).update({'status':'Completed'});
+                          }
                         },
                         icon: Icon(Icons.send,color: Colors.white,), label: Text('Completed',style: TextStyle(color: Colors.white),),
                       ),

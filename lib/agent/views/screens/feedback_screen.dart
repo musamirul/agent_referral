@@ -185,45 +185,70 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   void saveFeedback() async {
     if (_formKey.currentState!.validate()) {
       final feedbackId = Uuid().v4();
-      await _firestore.collection('feedback').doc(feedbackId).set({
-        'agentId': _auth.currentUser!.uid,
-        'agentEmail' : _auth.currentUser!.email,
-        'feedback': feedback,
-        'title': feedbackTitle.text,
-        'description': feedbackDescription.text,
-        'status': 'Pending',
-      }).whenComplete(() {
+      // await _firestore.collection('feedback').doc(feedbackId).set({
+      //   'agentId': _auth.currentUser!.uid,
+      //   'agentEmail' : _auth.currentUser!.email,
+      //   'feedback': feedback,
+      //   'title': feedbackTitle.text,
+      //   'description': feedbackDescription.text,
+      //   'status': 'Pending',
+      // }).whenComplete(() {
+      //   feedbackTitle.clear();
+      //   feedbackDescription.clear();
+      //   sendEmail(feedbackId);
+      // });
+
+      await _firestore.collection('mail').doc(feedbackId).set({
+        'to': 'musamirul.kpj@gmail.com',
+        'from': _auth.currentUser!.email,
+        'message': {
+          'subject': '('+feedback!+') '+feedbackTitle.text,
+          'text': _auth.currentUser!.email! + '\n\n' +
+                  'Description: ' + feedbackDescription.text,
+          'html': '''
+                  <div style="font-family: Arial, sans-serif; color: #333;">
+                      <p><strong>From:</strong> ${_auth.currentUser!.email!}</p>
+                      <p><strong>Feedback Title:</strong> ${feedbackTitle.text}</p>
+                      <p><strong>Feedback Type:</strong> ${feedback}</p>
+                      <p><strong>Description:</strong></p>
+                      <p style="padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+                          ${feedbackDescription.text.replaceAll('\n', '<br>')}
+                      </p>
+                  </div>
+              ''',
+        }
+      }).whenComplete((){
         feedbackTitle.clear();
         feedbackDescription.clear();
-        sendEmail(feedbackId);
+        // sendEmail(feedbackId);
       });
     }
   }
 
-  void sendEmail(String feedbackId) async {
-    String username = 'musamirul123@gmail.com'; // Your Gmail address
-    String password = '';    // Your Gmail App Password
-
-    final smtpServer = gmail(username, password);
-
-    final message = Message()
-      ..from = Address(username, 'ameirul')
-      ..recipients.add('musamirul123@gmail.com')  // Recipient email
-      ..subject = 'New Feedback Submitted: $feedbackId'
-      ..text = 'Feedback Type: $feedback\n'
-          'Title: ${feedbackTitle.text}\n'
-          'Description: ${feedbackDescription.text}';
-
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
-      print('Message not sent. \n${e.toString()}');
-      for (var p in e.problems) {
-        print('Problem: ${p.code}: ${p.msg}');
-      }
-    }
-  }
+  // void sendEmail(String feedbackId) async {
+  //   String username = 'musamirul123@gmail.com'; // Your Gmail address
+  //   String password = '';    // Your Gmail App Password
+  //
+  //   final smtpServer = gmail(username, password);
+  //
+  //   final message = Message()
+  //     ..from = Address(username, 'ameirul')
+  //     ..recipients.add('musamirul123@gmail.com')  // Recipient email
+  //     ..subject = 'New Feedback Submitted: $feedbackId'
+  //     ..text = 'Feedback Type: $feedback\n'
+  //         'Title: ${feedbackTitle.text}\n'
+  //         'Description: ${feedbackDescription.text}';
+  //
+  //   try {
+  //     final sendReport = await send(message, smtpServer);
+  //     print('Message sent: ' + sendReport.toString());
+  //   } on MailerException catch (e) {
+  //     print('Message not sent. \n${e.toString()}');
+  //     for (var p in e.problems) {
+  //       print('Problem: ${p.code}: ${p.msg}');
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

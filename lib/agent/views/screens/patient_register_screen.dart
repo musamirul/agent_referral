@@ -68,6 +68,7 @@ class PatientRegisterScreen extends StatelessWidget {
                 onPressed: () async{
                   if(_formKey.currentState!.validate()){
                     final referralId = Uuid().v4();
+
                     await _firestore.collection('referral').doc(referralId).set({
                       'agentId' : _auth.currentUser!.uid,
                       'referralId' :referralId,
@@ -100,12 +101,41 @@ class PatientRegisterScreen extends StatelessWidget {
                       'requestSpeciality':_referralProvider.referralData['requestSpeciality'],
                       'doctorAttending' :'empty',
                       'fileUrlList':_referralProvider.referralData['fileUrlList'],
-                    }).whenComplete(() {
-                      _referralProvider.clearData();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return AgentMainScreen();
-                      },));
-                    },);
+                    });
+                    // Send an email notification through Firestore's mail collection
+                    await _firestore.collection('mail').doc(referralId).set({
+                      'to': 'musamirul.kpj@gmail.com',
+                      'from': _auth.currentUser!.email,
+                      'message': {
+                        'subject': '(New Referral created) ' + _referralProvider.referralData['patientName'],
+                        'text': _auth.currentUser!.email! + '\n\n' +
+                            'status: Pending',
+                        'html': '''
+                          <div style="font-family: Arial, sans-serif; color: #333;">
+                            <p><strong>From:</strong> ${_auth.currentUser!.email}</p>
+                            <p><strong>Patient Name:</strong> ${_referralProvider.referralData['patientName']}</p>
+                            <p><strong>Patient IC:</strong> ${_referralProvider.referralData['patientIc']}</p>
+                            <p><strong>Nationality:</strong> ${_referralProvider.referralData['patientNationality']}</p>
+                            <p><strong>Description:</strong></p>
+                            <p style="padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+                              ${_referralProvider.referralData['patientPhone']?.replaceAll('\n', '<br>')}
+                              ${_referralProvider.referralData['patientAddress']?.replaceAll('\n', '<br>')}
+                              ${_referralProvider.referralData['patientComplaints']?.replaceAll('\n', '<br>')}
+                              ${_referralProvider.referralData['reasonReferral']?.replaceAll('\n', '<br>')}
+                            </p>
+                            <p>
+                              Please check your app to verify this patient and approve the referral.
+                            </p>
+                          </div>
+                        ''',
+                      }
+                    });
+
+                    // Clear the form data and navigate to the AgentMainScreen
+                    _referralProvider.clearData();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return AgentMainScreen();
+                    }));
                   }
                 },
                 icon: Icon(Icons.add,color: Colors.white),
