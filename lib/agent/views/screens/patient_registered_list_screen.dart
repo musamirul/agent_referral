@@ -1,5 +1,6 @@
 import 'package:agent_referral/agent/views/screens/patient_tap_screen/patient_history_screen.dart';
 import 'package:agent_referral/agent/views/screens/patient_tap_screen/patient_pending_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

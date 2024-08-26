@@ -1,4 +1,5 @@
 import 'package:agent_referral/agent/views/screens/account_screen.dart';
+import 'package:agent_referral/agent/views/screens/agent_home_screen.dart';
 import 'package:agent_referral/agent/views/screens/feedback_screen.dart';
 import 'package:agent_referral/agent/views/screens/hospital_info_screen.dart';
 import 'package:agent_referral/agent/views/screens/patient_register_screen.dart';
@@ -15,11 +16,12 @@ class AgentMainScreen extends StatefulWidget {
 class _AgentMainScreenState extends State<AgentMainScreen> {
   int _pageIndex=0;
   List<Widget> _pages = [
+    AgentHomeScreen(),
     PatientRegisteredListScreen(),
     PatientRegisterScreen(),
     HospitalInfoScreen(),
     FeedbackScreen(),
-    AccountScreen(),
+    // AccountScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -35,11 +37,12 @@ class _AgentMainScreenState extends State<AgentMainScreen> {
         selectedItemColor: Colors.blue,
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.app_registration),label: 'Patient List'),
-          BottomNavigationBarItem(icon: Icon(Icons.add),label: 'Register Patient'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline),label: 'Hospital Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.app_registration),label: 'Ref List'),
+          BottomNavigationBarItem(icon: Icon(Icons.add),label: 'Create Ref'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline),label: 'KPJ Info'),
           BottomNavigationBarItem(icon: Icon(Icons.feedback),label: 'Feedback'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings),label: 'Settings'),
+          // BottomNavigationBarItem(icon: Icon(Icons.settings),label: 'Settings'),
 
         ],
       ),

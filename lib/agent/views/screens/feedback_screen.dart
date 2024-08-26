@@ -198,6 +198,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       //   sendEmail(feedbackId);
       // });
 
+      await _firestore.collection('feedback').doc(feedbackId).set({
+        'agentId': _auth.currentUser!.uid,
+        'agentEmail' : _auth.currentUser!.email,
+        'feedback': feedback,
+        'title': feedbackTitle.text,
+        'description': feedbackDescription.text,
+        'status': 'Pending',
+      });
+
       await _firestore.collection('mail').doc(feedbackId).set({
         'to': 'musamirul.kpj@gmail.com',
         'from': _auth.currentUser!.email,
@@ -217,11 +226,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   </div>
               ''',
         }
-      }).whenComplete((){
-        feedbackTitle.clear();
-        feedbackDescription.clear();
-        // sendEmail(feedbackId);
       });
+
+      feedbackTitle.clear();
+      feedbackDescription.clear();
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Feedback submitted successfully!')));
+
     }
   }
 

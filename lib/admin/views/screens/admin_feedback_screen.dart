@@ -46,7 +46,7 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen> {
                   await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) {
                       return FeedbackDetailScreen(
-                        feedbackId: '',);
+                        feedbackId: feedbackData.id);
                     },
                   ));
                 },
