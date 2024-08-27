@@ -1,5 +1,6 @@
 import 'package:agent_referral/agent/views/screens/account_screen.dart';
 import 'package:agent_referral/agent/views/widgets/banner_widget.dart';
+import 'package:agent_referral/agent/views/widgets/facility_widget.dart';
 import 'package:agent_referral/agent/views/widgets/welcome_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,120 +39,134 @@ class AgentHomeScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: Colors.grey.shade200,
-            appBar: AppBar(
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.orange.shade300,
-                    backgroundImage: NetworkImage(snapshot.data!['image']),
-                  ),
-                ),
-              ],
-              title: Text(
-                'Hello! ' + agentName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: Colors.orange.shade300,
-            ),
-            drawer: Drawer(
-              backgroundColor: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      // DrawerHeader(child: Text('Hi Admin')),
-                      UserAccountsDrawerHeader(
-                        decoration: BoxDecoration(
-                          color: Colors.amber.shade500,
-                        ),
-                        currentAccountPicture: CircleAvatar(
-                          radius: 64,
-                          backgroundColor: Colors.orange.shade300,
-                          backgroundImage:
-                              NetworkImage(snapshot.data!['image']),
-                        ),
-                        accountName: Text(agentName,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold)),
-                        accountEmail: Text(_auth.currentUser!.email.toString(),
-                            style: TextStyle(color: Colors.black)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        child: ListTile(
-                            leading: Icon(
-                              Icons.home,
-                            ),
-                            title: Text(
-                              'Home',
-                            )),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        child: ListTile(
-                            leading: Icon(
-                              Icons.info,
-                            ),
-                            title: Text('About')),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AccountScreen()));
-                          },
-                          child: ListTile(
-                              leading: Icon(
-                                Icons.settings,
-                              ),
-                              title: Text('Profile')),
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 25, bottom: 25),
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.logout,
-                      ),
-                      title: Text('Logout'),
-                      onTap: () async {
-                        await _auth.signOut();
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-            body:
+          appBar: AppBar(
+            actions: [
               Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: const EdgeInsets.only(right: 10),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.orange.shade300,
+                  backgroundImage: NetworkImage(snapshot.data!['image']),
+                ),
+              ),
+            ],
+            title: Text(
+              'Hello! ' + agentName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: Colors.white,
+          ),
+          drawer: Drawer(
+            backgroundColor: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
                   children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    BannerWidget(),
-                    SizedBox(
-                      height: 10,
+                    // DrawerHeader(child: Text('Hi Admin')),
+                    UserAccountsDrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade500,
+                      ),
+                      currentAccountPicture: CircleAvatar(
+                        radius: 64,
+                        backgroundColor: Colors.orange.shade300,
+                        backgroundImage: NetworkImage(snapshot.data!['image']),
+                      ),
+                      accountName: Text(agentName,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
+                      accountEmail: Text(_auth.currentUser!.email.toString(),
+                          style: TextStyle(color: Colors.black)),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 30.0),
-                      child: WelcomeText(),
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: ListTile(
+                          leading: Icon(
+                            Icons.home,
+                          ),
+                          title: Text(
+                            'Home',
+                          )),
                     ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: ListTile(
+                          leading: Icon(
+                            Icons.info,
+                          ),
+                          title: Text('About')),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AccountScreen()));
+                        },
+                        child: ListTile(
+                            leading: Icon(
+                              Icons.settings,
+                            ),
+                            title: Text('Profile')),
+                      ),
+                    )
                   ],
                 ),
+                Padding(
+                  padding: EdgeInsets.only(left: 25, bottom: 25),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                    ),
+                    title: Text('Logout'),
+                    onTap: () async {
+                      await _auth.signOut();
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Stack(children: [
+              // Background image
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/building.png',
+                  // Make sure to add the image in the assets folder and specify it in pubspec.yaml
+                  fit: BoxFit.cover,
+                ),
               ),
-            );
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      BannerWidget(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 30.0),
+                        child: WelcomeText(),
+                      ),
+                      SizedBox(height: 20,),
+                      FacilityWidget(),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        );
       },
     );
   }

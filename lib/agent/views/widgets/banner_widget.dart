@@ -38,11 +38,20 @@ class _BannerWidgetState extends State<BannerWidget> {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
-          height: 140,
+          height: 220,
           width: double.infinity,
           decoration: BoxDecoration(
-              color: Colors.yellow.shade900,
-              borderRadius: BorderRadius.circular(10)),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
+                  spreadRadius: 5, // The spread of the shadow
+                  blurRadius: 7, // The blur radius of the shadow
+                  offset: Offset(0, 3), // Offset in the X and Y direction
+                ),
+              ],
+          ),
           child: PageView.builder(
             itemCount: _bannerImage.length,
             itemBuilder: (context, index) {
@@ -50,7 +59,7 @@ class _BannerWidgetState extends State<BannerWidget> {
                 borderRadius: BorderRadius.circular(10),
                 child: CachedNetworkImage(
                   imageUrl: _bannerImage[index],
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitWidth,
                   placeholder: (context, url) => Shimmer(
                     duration: Duration(seconds: 10),
                     interval: Duration(seconds: 10),
