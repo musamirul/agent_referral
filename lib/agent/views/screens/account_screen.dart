@@ -28,35 +28,88 @@ class AccountScreen extends StatelessWidget {
           Map<String, dynamic> data =
           snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
-            appBar: AppBar(
-              title: Padding(
-                padding: const EdgeInsets.only(top: 25,bottom: 25),
-                child: Text('Profile', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),),
+            backgroundColor: Colors.grey.shade200,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(200),
+              child: AppBar(
+                iconTheme: IconThemeData(color: Colors.white),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10, top: 10),
+                    child: InkWell(
+                      onTap: () async {
+                        await _auth.signOut();
+                      },
+                      child: Column(
+                        children: [
+                          Icon(Icons.lock_open,color: Colors.white,),
+                          Text('LOGOUT',style: GoogleFonts.lato(color: Colors.white,fontSize: 10)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                backgroundColor: Colors.transparent, // Make the AppBar background transparent
+                elevation: 0, // Remove shadow
+                flexibleSpace: Stack(
+                  children: [
+                    // Background image
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/images/header.jpg', // Replace with your image path
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // Gradient overlay (optional)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blue.withOpacity(0.7),
+                              Colors.orange.withOpacity(0.6),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Centered title
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20), // Adjust as needed
+                        child:Column(
+                          children: [
+                            SizedBox(
+                              height: 35,
+                            ),
+                            Center(
+                              child: CircleAvatar(
+                                radius: 64,
+                                backgroundColor: Colors.orange.shade300,
+                                backgroundImage: NetworkImage(data['image']),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Text(data['fullName'], style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Text('Agent Number : ' +data['agentNumber'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              backgroundColor: Colors.orange.shade400,
-              centerTitle: true,
             ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Center(
-                    child: CircleAvatar(
-                      radius: 64,
-                      backgroundColor: Colors.orange.shade300,
-                      backgroundImage: NetworkImage(data['image']),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(data['fullName'], style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(data['agentNumber']+' | ' +data['insuranceOption'],style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Divider(thickness: 0.7,color: Colors.grey,),
@@ -73,16 +126,14 @@ class AccountScreen extends StatelessWidget {
                     title: Text(data['icNumber']),
                   ),
                   ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text('Logout'),
-                    onTap: () async{
-                      await _auth.signOut();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                      );
-                    },
-                  )
+                    leading: Icon(Icons.support_agent),
+                    title: Text(data['insuranceOption']),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(data['userType']),
+                  ),
+
                 ],
               ),
             ),

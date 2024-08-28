@@ -1,10 +1,13 @@
+import 'package:agent_referral/agent/views/screens/about_screen.dart';
 import 'package:agent_referral/agent/views/screens/account_screen.dart';
 import 'package:agent_referral/agent/views/widgets/banner_widget.dart';
 import 'package:agent_referral/agent/views/widgets/facility_widget.dart';
+import 'package:agent_referral/agent/views/widgets/header_welcome_widget.dart';
 import 'package:agent_referral/agent/views/widgets/welcome_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AgentHomeScreen extends StatelessWidget {
   const AgentHomeScreen({super.key});
@@ -39,24 +42,62 @@ class AgentHomeScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: Colors.grey.shade200,
-          appBar: AppBar(
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.orange.shade300,
-                  backgroundImage: NetworkImage(snapshot.data!['image']),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(200),
+            child: AppBar(
+              iconTheme: IconThemeData(color: Colors.white),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10, top: 10),
+                  child: InkWell(
+                    onTap: () async {
+                      await _auth.signOut();
+                    },
+                    child: Column(
+                      children: [
+                        Icon(Icons.lock_open,color: Colors.white,),
+                        Text('LOGOUT',style: GoogleFonts.lato(color: Colors.white,fontSize: 10)),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-            title: Text(
-              'Hello! ' + agentName,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
+              ],
+              backgroundColor: Colors.transparent, // Make the AppBar background transparent
+              elevation: 0, // Remove shadow
+              flexibleSpace: Stack(
+                children: [
+                  // Background image
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/images/header.jpg', // Replace with your image path
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  // Gradient overlay (optional)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.blue.withOpacity(0.7),
+                            Colors.orange.withOpacity(0.6),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Centered title
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 5), // Adjust as needed
+                      child: HeaderWelcomeWidget(),
+                    ),
+                  ),
+                ],
               ),
             ),
-            backgroundColor: Colors.white,
           ),
           drawer: Drawer(
             backgroundColor: Colors.white,
@@ -78,27 +119,32 @@ class AgentHomeScreen extends StatelessWidget {
                       accountName: Text(agentName,
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.bold,fontSize: 20)),
                       accountEmail: Text(_auth.currentUser!.email.toString(),
                           style: TextStyle(color: Colors.black)),
                     ),
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 25),
+                    //   child: ListTile(
+                    //       leading: Icon(
+                    //         Icons.home,
+                    //       ),
+                    //       title: Text(
+                    //         'Home',
+                    //       )),
+                    // ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: ListTile(
-                          leading: Icon(
-                            Icons.home,
-                          ),
-                          title: Text(
-                            'Home',
-                          )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: ListTile(
-                          leading: Icon(
-                            Icons.info,
-                          ),
-                          title: Text('About')),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutScreen(),));
+                        },
+                        child: ListTile(
+                            leading: Icon(
+                              Icons.info,
+                            ),
+                            title: Text('About')),
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25),
@@ -142,7 +188,7 @@ class AgentHomeScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.only(left: 15.0,right: 15),
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -151,14 +197,14 @@ class AgentHomeScreen extends StatelessWidget {
                         height: 5,
                       ),
                       BannerWidget(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 30.0),
-                        child: WelcomeText(),
-                      ),
-                      SizedBox(height: 20,),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 30.0),
+                      //   child: WelcomeText(),
+                      // ),
+                      SizedBox(height: 10,),
                       FacilityWidget(),
                     ],
                   ),

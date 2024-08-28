@@ -64,80 +64,124 @@ class _PatientDetailState extends State<PatientDetail> {
             });
           }
           return Scaffold(
-            appBar: AppBar(
-              title: Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Center(
-                  child: Text(
-                    'Patient Detail',
-                    style: GoogleFonts.roboto(
-                      letterSpacing: 0.9,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.brown.shade900,
-                      fontSize: 26,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(100),
+              child: AppBar(
+                iconTheme: IconThemeData(color: Colors.white),
+                backgroundColor: Colors.transparent, // Make the AppBar background transparent
+                elevation: 0, // Remove shadow
+                flexibleSpace: Stack(
+                  children: [
+                    // Background image
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/images/header.jpg', // Replace with your image path
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
+                    // Gradient overlay (optional)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blue.withOpacity(0.7),
+                              Colors.orange.withOpacity(0.6),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Centered title
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 50), // Adjust as needed
+                        child:Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+                              child: Text(
+                                data['patientName'].toString().toUpperCase(),
+                                style: TextStyle(fontSize: 20, letterSpacing: 1, fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 8,),
+                              child: Text(
+                                data['patientIc'],
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            if (data['status'] == "Approved")
+                              isLoadingDoctorName
+                                  ? CircularProgressIndicator()
+                                  : Container(padding: EdgeInsets.all(5),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              backgroundColor: Colors.orange.shade400,
-              centerTitle: true,
             ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  if (data['status'] == "Approved")
-                    isLoadingDoctorName
-                        ? CircularProgressIndicator()
-                        : Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Container(padding: EdgeInsets.all(10),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 10,
-                            spreadRadius: 0.1,
-                            offset: Offset(4, 5),
-                            blurStyle: BlurStyle.normal,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          GradientIcon(
-                            icon: Icons.person,
-                            gradient: LinearGradient(
-                              colors: [Colors.orange, Colors.yellow],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            size: 50,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
-                            child: Text(
-                              data['patientName'].toString().toUpperCase(),
-                              style: TextStyle(fontSize: 17, letterSpacing: 1, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 10),
-                            child: Text(
-                              data['patientIc'],
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // if (data['status'] == "Approved")
+                  //   isLoadingDoctorName
+                  //       ? CircularProgressIndicator()
+                  //       : Padding(
+                  //     padding: const EdgeInsets.only(top: 10),
+                  //     child: Container(padding: EdgeInsets.all(10),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
+                  //   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(15.0),
+                  //   child: Container(
+                  //     width: MediaQuery.of(context).size.width,
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(5),
+                  //       color: Colors.white,
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //           color: Colors.grey,
+                  //           blurRadius: 10,
+                  //           spreadRadius: 0.1,
+                  //           offset: Offset(4, 5),
+                  //           blurStyle: BlurStyle.normal,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     child: Column(
+                  //       children: [
+                  //         GradientIcon(
+                  //           icon: Icons.person,
+                  //           gradient: LinearGradient(
+                  //             colors: [Colors.orange, Colors.yellow],
+                  //             begin: Alignment.topLeft,
+                  //             end: Alignment.bottomRight,
+                  //           ),
+                  //           size: 50,
+                  //         ),
+                  //         Padding(
+                  //           padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+                  //           child: Text(
+                  //             data['patientName'].toString().toUpperCase(),
+                  //             style: TextStyle(fontSize: 17, letterSpacing: 1, fontWeight: FontWeight.bold),
+                  //           ),
+                  //         ),
+                  //         Padding(
+                  //           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 10),
+                  //           child: Text(
+                  //             data['patientIc'],
+                  //             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
 
                   _buildPatientInfoSection(data),
                   Divider(thickness: 2, color: Colors.grey.shade200),

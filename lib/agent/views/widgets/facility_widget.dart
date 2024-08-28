@@ -16,7 +16,7 @@ class FacilityWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Our Facilities', style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w900,letterSpacing: 1, color: Colors.black87),),
+          Text('OUR FACILITIES    >', style: GoogleFonts.lato(fontSize: 13,fontWeight: FontWeight.w900,letterSpacing: 0, color: Colors.black87),),
           SizedBox(height: 5,),
           Container(
             height: 250,
@@ -54,13 +54,16 @@ class FacilityWidget extends StatelessWidget {
                                   left: 10, // Adjust this to position the text
                                   child: Padding(
                                     padding: const EdgeInsets.all(1.0),
-                                    child: Text(' '+
-                                      _categoryFacility[index]+'  ',
-                                      style: TextStyle(
-                                        fontSize: 14, // Adjust the size as needed
-                                        fontWeight: FontWeight.bold, // Optional: Make the text bold
-                                        color: Colors.black,
-                                        backgroundColor: Colors.white,// Text color, white to stand out against the image
+                                    child: Container(
+                                      padding: EdgeInsets.all(2),
+                                      decoration: BoxDecoration(color: Colors.orange.shade200,borderRadius: BorderRadius.circular(5)),
+                                      child: Text(' '+
+                                        _categoryFacility[index]+'  ',
+                                        style: TextStyle(
+                                          fontSize: 14, // Adjust the size as needed
+                                          fontWeight: FontWeight.bold, // Optional: Make the text bold
+                                          color: Colors.black, // Text color, white to stand out against the image
+                                        ),
                                       ),
                                     ),
                                   ),

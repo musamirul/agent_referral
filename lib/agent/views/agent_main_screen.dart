@@ -33,15 +33,34 @@ class _AgentMainScreenState extends State<AgentMainScreen> {
             _pageIndex = value;
           });
         },
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.blue,
+        backgroundColor: Colors.grey.shade800,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.orange.shade500,
+
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined),label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.app_registration),label: 'Ref List'),
-          BottomNavigationBarItem(icon: Icon(Icons.add),label: 'Create Ref'),
+          BottomNavigationBarItem(
+            icon: Container(
+              width: 40, // Diameter of the circle
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.orange.shade500, // Circle color
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 30, // Icon size
+                ),
+              ),
+            ),
+            label: 'Create Refs',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.info_outline),label: 'KPJ Info'),
-          BottomNavigationBarItem(icon: Icon(Icons.feedback),label: 'Feedback'),
+          BottomNavigationBarItem(icon: Icon(Icons.feedback_outlined),label: 'Feedback'),
           // BottomNavigationBarItem(icon: Icon(Icons.settings),label: 'Settings'),
 
         ],
