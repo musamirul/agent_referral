@@ -36,18 +36,65 @@ class AdminDashboardScreen extends StatelessWidget {
     final FirebaseAuth _auth = FirebaseAuth.instance;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(top: 5),
-          child: Center(child: Text('Dashboard', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(200),
+        child: AppBar(
+          iconTheme: IconThemeData(color: Colors.white),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10, top: 10),
+              child: InkWell(
+                onTap: () async {
+                  await _auth.signOut();
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.lock_open,color: Colors.white,),
+                    Text('LOGOUT',style: GoogleFonts.lato(color: Colors.white,fontSize: 10)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          backgroundColor: Colors.transparent, // Make the AppBar background transparent
+          elevation: 0, // Remove shadow
+          flexibleSpace: Stack(
+            children: [
+              // Background image
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/header.jpg', // Replace with your image path
+                  fit: BoxFit.cover,
+                ),
+              ),
+              // Gradient overlay (optional)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blue.withOpacity(0.7),
+                        Colors.orange.withOpacity(0.6),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+              ),
+              // Centered title
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5), // Adjust as needed
+                  child: Text(
+                    'Dashboard',textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700,fontSize: 25,letterSpacing: 0.5, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        backgroundColor: Colors.orange.shade400,
-        // leading: IconButton(
-        //   icon: Icon(Icons.logout),
-        //   onPressed: () async{
-        //     await _auth.signOut();
-        //   },
-        // ),
       ),
       drawer: Drawer(
         backgroundColor: Colors.white,

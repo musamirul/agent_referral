@@ -29,8 +29,10 @@ class _DoctorMainScreenState extends State<DoctorMainScreen> {
             _pageIndex = value;
           });
         },
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.blue,
+        backgroundColor: Colors.grey.shade800,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.orange.shade500,
+
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.dashboard),label: 'Home'),

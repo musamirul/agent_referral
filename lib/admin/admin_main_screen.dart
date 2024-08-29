@@ -34,15 +34,17 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             _pageIndex = value;
           });
         },
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.blue,
+        backgroundColor: Colors.grey.shade800,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.orange.shade500,
+
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.image),label: 'Package'),
-          BottomNavigationBarItem(icon: Icon(Icons.local_hospital),label: 'Doctor'),
-          BottomNavigationBarItem(icon: Icon(Icons.list),label: 'Users'),
-          BottomNavigationBarItem(icon: Icon(Icons.feed_rounded),label: 'Feedback'),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined),label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.image_outlined),label: 'Package'),
+          BottomNavigationBarItem(icon: Icon(Icons.local_hospital_outlined),label: 'Doctor'),
+          BottomNavigationBarItem(icon: Icon(Icons.list_outlined),label: 'Users'),
+          BottomNavigationBarItem(icon: Icon(Icons.feedback_outlined),label: 'Feedback'),
           // BottomNavigationBarItem(icon: Icon(Icons.add),label: 'User')
       ],
       ),
