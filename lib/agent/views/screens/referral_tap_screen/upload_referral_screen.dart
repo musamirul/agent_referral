@@ -96,7 +96,7 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> with Automa
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.yellow.shade100,
+      backgroundColor: Colors.orange.shade50,
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
@@ -121,7 +121,7 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> with Automa
             ),
             Expanded(
               child: Container(
-                color: Colors.grey.shade200,
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
                 child: ListView.builder(
                   itemCount: selectedFiles.length,
                   itemBuilder: (context, index) {

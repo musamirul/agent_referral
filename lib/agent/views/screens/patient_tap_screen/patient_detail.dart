@@ -64,6 +64,7 @@ class _PatientDetailState extends State<PatientDetail> {
             });
           }
           return Scaffold(
+            backgroundColor: Colors.grey.shade100,
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(100),
               child: AppBar(
@@ -97,7 +98,7 @@ class _PatientDetailState extends State<PatientDetail> {
                     // Centered title
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 50), // Adjust as needed
+                        padding: const EdgeInsets.only(top: 25), // Adjust as needed
                         child:Column(
                           children: [
                             Padding(
@@ -206,9 +207,10 @@ class _PatientDetailState extends State<PatientDetail> {
   Widget _buildPatientInfoSection(Map<String, dynamic> data) {
     return Column(
       children: [
+        SizedBox(height: 10,),
         Container(
           child: Text(
-            'Patient & Family Information',
+            'PATIENT & FAMILY INFORMATION',
             style: GoogleFonts.roboto(
               letterSpacing: 0.9,
               fontWeight: FontWeight.w900,
@@ -249,7 +251,7 @@ class _PatientDetailState extends State<PatientDetail> {
     return Column(
       children: [
         Text(
-          'Insurance Information',
+          'INSURANCE INFORMATION',
           style: GoogleFonts.roboto(
             letterSpacing: 0.9,
             fontWeight: FontWeight.w900,
@@ -289,7 +291,7 @@ class _PatientDetailState extends State<PatientDetail> {
       child: Column(
         children: [
           Text(
-            'Referral Information',
+            'REFERRAL INFORMATION',
             style: GoogleFonts.roboto(
               letterSpacing: 0.9,
               fontWeight: FontWeight.w900,
@@ -298,26 +300,69 @@ class _PatientDetailState extends State<PatientDetail> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Date Accident / Injury: ' +
-                  data['patientDateAccident'] +
-                  ' ' +
-                  data['patientTimeAccident'],
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(children: [
+                    Text('Date Accident / Injury : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text(data['patientDateAccident'] +
+                        ' ' +
+                        data['patientTimeAccident'],),
+                  ],),
+                ),
+                if (data['patientComplaints'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(children: [
+                      Text('Complaints/History : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(data['patientComplaints']),
+                    ],),
+                  ),
+                if (data['reasonReferral'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(children: [
+                      Text('Reason For Referral : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(data['reasonReferral']),
+                    ],),
+                  ),
+                if (data['requestSpeciality'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(children: [
+                      Text('Request for Specialist : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(data['requestSpeciality']),
+                    ],),
+                  ),
+                if (data['requestTreatment'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(children: [
+                      Text('Request for Treatment : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(data['requestTreatment']),
+                    ],),
+                  ),
+                if (data['transportation'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(children: [
+                      Text('Transportation : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(data['transportation']),
+                    ],),
+                  ),
+                if (data['patientBed'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(children: [
+                      Text('Request Bed : ',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(data['patientBed']),
+                    ],),
+                  ),
+              ],
             ),
           ),
-          if (data['patientComplaints'] != null)
-            Text('Complaints/History : ' + data['patientComplaints']),
-          if (data['reasonReferral'] != null)
-            Text('Reason For Referral : ' + data['reasonReferral']),
-          if (data['requestSpeciality'] != null)
-            Text('Request for Specialist : ' + data['requestSpeciality']),
-          if (data['requestTreatment'] != null)
-            Text('Request for Treatment : ' + data['requestTreatment']),
-          if (data['transportation'] != null)
-            Text('Transportation : ' + data['transportation']),
-          if (data['patientBed'] != null)
-            Text('Request Bed : ' + data['patientBed']),
         ],
       ),
     );
@@ -327,7 +372,7 @@ class _PatientDetailState extends State<PatientDetail> {
     return Column(
       children: [
         Text(
-          'Patient Document',
+          'PATIENT DOCUMENT',
           style: GoogleFonts.roboto(
             letterSpacing: 0.9,
             fontWeight: FontWeight.w900,
@@ -335,39 +380,49 @@ class _PatientDetailState extends State<PatientDetail> {
             fontSize: 15,
           ),
         ),
-        ElevatedButton(
+        ElevatedButton.icon(
           onPressed: () => downloadAllFiles(urls, context),
-          child: Text('Download All Documents'),
+          icon: Icon(Icons.save),
+          label: Text('Download All Documents'),
         ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: urls.length,
-          itemBuilder: (context, index) {
-            String url = urls[index];
-            String fileName = url.split('/').last.split('?').first; // Handling file name from URL
-            return ListTile(
-              title: GestureDetector(
-                onTap: () async {
-                  // Call your method to open the file. This could be using a PDF viewer, image viewer, or a web view.
-                  await openFileFromUrl(url, fileName);
-                },
-                child: Text(
-                  fileName,
-                  style: TextStyle(
-                    color: Colors.blue, // Makes the text look like a clickable link
-                    decoration: TextDecoration.underline, // Underlines the text
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: urls.length,
+            itemBuilder: (context, index) {
+              String url = urls[index];
+              String fileName = url.split('/').last.split('?').first; // Handling file name from URL
+              return Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                  child: ListTile(
+                    title: GestureDetector(
+                      onTap: () async {
+                        // Call your method to open the file. This could be using a PDF viewer, image viewer, or a web view.
+                        await openFileFromUrl(url, fileName);
+                      },
+                      child: Text(
+                        fileName,
+                        style: TextStyle(
+                          color: Colors.blue, // Makes the text look like a clickable link
+                          decoration: TextDecoration.underline, // Underlines the text
+                        ),
+                      ),
+                    ),trailing: IconButton(
+                      icon: Icon(Icons.save_alt),
+                      onPressed: () {
+                        downloadFile(url, fileName, context);
+                        print(url);
+                      },
+                    ),
                   ),
                 ),
-              ),trailing: IconButton(
-                icon: Icon(Icons.download),
-                onPressed: () {
-                  downloadFile(url, fileName, context);
-                  print(url);
-                },
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ],
     );
