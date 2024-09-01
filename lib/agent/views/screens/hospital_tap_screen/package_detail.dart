@@ -24,13 +24,22 @@ class PackageDetail extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-          snapshot.data!.data() as Map<String, dynamic>;
+          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
             appBar: AppBar(
               title: Padding(
-                padding: const EdgeInsets.only(top: 25),
-                child: Center(child: Text(data['name'], style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
+                padding: const EdgeInsets.only(top: 5),
+                child: Center(
+                  child: Text(
+                    data['name'],
+                    style: GoogleFonts.roboto(
+                      letterSpacing: 0.9,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.brown.shade900,
+                      fontSize: 26,
+                    ),
+                  ),
+                ),
               ),
               backgroundColor: Colors.orange.shade400,
               centerTitle: true,
@@ -39,23 +48,23 @@ class PackageDetail extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    height: 650,
-                    width: double.infinity,
+                    height: 570,
+                    width: MediaQuery.of(context).size.width,
                     child: CachedNetworkImage(
                       imageUrl: data['image'],
                       imageBuilder: (context, imageProvider)  => Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover
+                              image: imageProvider,
+                              fit: BoxFit.cover
                           ),
                         ),
                       ),
                       placeholder: (context, url) => Shimmer(
-                        duration: Duration(seconds: 2), // Default value
-                        color: Colors.grey, // Default value
-                        colorOpacity: 0.3, // Default value
-                        enabled: true, // Default value
+                        duration: Duration(seconds: 2),
+                        color: Colors.grey,
+                        colorOpacity: 0.3,
+                        enabled: true,
                         direction: ShimmerDirection.fromLTRB(),
                         child: Container(
                           color: Colors.grey[300],
@@ -66,7 +75,13 @@ class PackageDetail extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Text(data['description']),
+                    child: Text(
+                      data['description'],
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
                   ),
                 ],
               ),

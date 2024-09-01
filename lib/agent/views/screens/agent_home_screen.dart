@@ -3,7 +3,9 @@ import 'package:agent_referral/agent/views/screens/account_screen.dart';
 import 'package:agent_referral/agent/views/widgets/banner_widget.dart';
 import 'package:agent_referral/agent/views/widgets/facility_widget.dart';
 import 'package:agent_referral/agent/views/widgets/header_welcome_widget.dart';
+import 'package:agent_referral/agent/views/widgets/total_refer_widget.dart';
 import 'package:agent_referral/agent/views/widgets/welcome_text.dart';
+import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -51,12 +53,45 @@ class AgentHomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 10, top: 10),
                   child: InkWell(
                     onTap: () async {
-                      await _auth.signOut();
+                      bool shouldLogout = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Logout'),
+                            content: Text('Are you sure you want to log out?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: Text('Logout'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (shouldLogout) {
+                        try {
+                          await _auth.signOut();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => LoginScreen()),
+                          );
+                        } catch (e) {
+                          print('Error signing out: $e');
+                          // Optionally, show an error message to the user
+                        }
+                      }
                     },
                     child: Column(
                       children: [
-                        Icon(Icons.lock_open,color: Colors.white,),
-                        Text('LOGOUT',style: GoogleFonts.lato(color: Colors.white,fontSize: 10)),
+                        Icon(Icons.lock_open, color: Colors.white),
+                        Text(
+                          'LOGOUT',
+                          style: GoogleFonts.lato(color: Colors.white, fontSize: 10),
+                        ),
                       ],
                     ),
                   ),
@@ -171,6 +206,9 @@ class AgentHomeScreen extends StatelessWidget {
                     title: Text('Logout'),
                     onTap: () async {
                       await _auth.signOut();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
                     },
                   ),
                 )
@@ -206,6 +244,8 @@ class AgentHomeScreen extends StatelessWidget {
                       // ),
                       SizedBox(height: 10,),
                       FacilityWidget(),
+                      SizedBox(height: 10,),
+                      TotalReferWidget(),
                     ],
                   ),
                 ),

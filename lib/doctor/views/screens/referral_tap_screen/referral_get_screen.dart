@@ -44,13 +44,13 @@ class _ReferralGetScreenState extends State<ReferralGetScreen> {
                     return AlertDialog(
                       title: Text("Confirm"),
                       content:
-                      Text("Are you sure you wish to delete this referral"),
+                      Text("Are you sure you wish to reject this referral"),
                       actions: [
                         ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop(true);
                             },
-                            child: Text("Delete")),
+                            child: Text("Reject")),
                         ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop(false);
@@ -64,8 +64,17 @@ class _ReferralGetScreenState extends State<ReferralGetScreen> {
               direction: DismissDirection.endToStart,
               background: Container(
                 alignment: Alignment.centerRight,
-                color: Colors.red,
-                child: Icon(Icons.delete, size: 40, color: Colors.white),
+                color: Colors.orange,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.orange.shade100),
+                        onPressed: () {}, icon: Icon(Icons.cancel, size: 40, color: Colors.red), label: Text('Reject Referral',)
+                    )
+                  ],
+                ),
               ),
               key: ValueKey<int>(index),
               onDismissed: (direction) {
@@ -73,7 +82,12 @@ class _ReferralGetScreenState extends State<ReferralGetScreen> {
                   _firestore
                       .collection('referral')
                       .doc(referralData['referralId'])
-                      .delete();
+                      .update(
+                      {
+                        'status' :'Reject',
+                      }
+                  );
+
                 });
               },
               child: InkWell(

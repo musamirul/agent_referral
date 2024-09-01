@@ -1,3 +1,4 @@
+import 'package:agent_referral/admin/views/screens/user_tap_screen/user_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -31,14 +32,21 @@ class _AgentPendingScreenState extends State<AgentPendingScreen> {
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (BuildContext context, int index) {
             final agentData = snapshot.data!.docs[index];
-            return ListTile(
-              title: Text(agentData['fullName']),
-              subtitle: Text(agentData['email']),
-              trailing: agentData['approved']==false ? ElevatedButton(onPressed: () async{
-                await _firestore.collection('users').doc(agentData['userId']).update({'approved': true});
-              }, child: Text('Approved')): ElevatedButton(onPressed: () async{
-                await _firestore.collection('users').doc(agentData['userId']).update({'approved':false});
-              }, child: Text('Reject')),
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => UserDetailScreen(userId: agentData['userId']),)
+                );
+              },
+              child: ListTile(
+                title: Text(agentData['fullName']),
+                subtitle: Text(agentData['email']),
+                trailing: agentData['approved']==false ? ElevatedButton(onPressed: () async{
+                  await _firestore.collection('users').doc(agentData['userId']).update({'approved': true});
+                }, child: Text('Approved')): ElevatedButton(onPressed: () async{
+                  await _firestore.collection('users').doc(agentData['userId']).update({'approved':false});
+                }, child: Text('Reject')),
+              ),
             );
           },
         );

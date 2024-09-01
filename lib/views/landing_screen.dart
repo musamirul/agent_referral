@@ -81,7 +81,8 @@ class _LandingScreenState extends State<LandingScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              gradient: RadialGradient(colors: [Colors.white, Colors.brown.shade100]),
+              image: DecorationImage(image: AssetImage('assets/images/building.png'),fit: BoxFit.cover),
+              gradient: RadialGradient(colors: [Colors.white, Colors.white]),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
@@ -89,14 +90,18 @@ class _LandingScreenState extends State<LandingScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                      userData['image'].toString(),
-                      width: 110,
-                      fit: BoxFit.cover,
-                    ),
+                  CircleAvatar(
+                    radius: 80,
+                    backgroundImage: NetworkImage(userData['image'].toString()),
                   ),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.circular(5),
+                  //   child: Image.network(
+                  //     userData['image'].toString(),
+                  //     width: 110,
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // ),
                   Text(
                     userData['fullName'].toString().toUpperCase(),
                     style: GoogleFonts.lato(

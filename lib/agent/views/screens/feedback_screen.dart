@@ -208,7 +208,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       });
 
       await _firestore.collection('mail').doc(feedbackId).set({
-        'to': 'musamirul.kpj@gmail.com',
+        'to': 'itservices@kpjklang.com',
         'from': _auth.currentUser!.email,
         'message': {
           'subject': '('+feedback!+') '+feedbackTitle.text,

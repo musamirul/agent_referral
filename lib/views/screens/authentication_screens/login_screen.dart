@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 TextFormField(
-                  obscureText: _passwordVisible,
+                  obscureText: !_passwordVisible,
                   validator: (value) {
                     if(value!.isEmpty){
                       return "Please enter your password";

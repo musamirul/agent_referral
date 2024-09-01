@@ -1,5 +1,6 @@
 import 'package:agent_referral/agent/views/screens/about_screen.dart';
 import 'package:agent_referral/doctor/views/screens/doctor_account_screen.dart';
+import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,17 @@ class DoctorDashboardScreen extends StatelessWidget {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
     Future<int> getTotalCompleted() async{
-      QuerySnapshot querySnapshot = await _firestore.collection('referral').where('status',isEqualTo: 'Completed').where('doctorAttending',isEqualTo: _auth.currentUser!.uid).get();
+      QuerySnapshot querySnapshot = await _firestore.collection('referral').where("status", isEqualTo: "Completed").where('doctorAttending',isEqualTo: _auth.currentUser!.uid).get();
       return querySnapshot.docs.length;
     }
 
     Future<int> getTotalNew() async{
-      QuerySnapshot querySnapshot = await _firestore.collection('referral').where('status',isEqualTo: 'Pending').where('doctorAttending',isEqualTo: _auth.currentUser!.uid).get();
+      QuerySnapshot querySnapshot = await _firestore.collection('referral').where('status',isEqualTo: 'Pending').where('doctorAttending',isEqualTo: 'empty').get();
+      return querySnapshot.docs.length;
+    }
+
+    Future<int> getTotalReject() async{
+      QuerySnapshot querySnapshot = await _firestore.collection('referral').where('status',isEqualTo: 'Reject').where('doctorAttending',isEqualTo: _auth.currentUser!.uid).get();
       return querySnapshot.docs.length;
     }
 
@@ -56,17 +62,45 @@ class DoctorDashboardScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 10, top: 10),
                   child: InkWell(
                     onTap: () async {
-                      await _auth.signOut();
+                      bool shouldLogout = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Logout'),
+                            content: Text('Are you sure you want to log out?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: Text('Logout'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (shouldLogout) {
+                        try {
+                          await _auth.signOut();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => LoginScreen()),
+                          );
+                        } catch (e) {
+                          print('Error signing out: $e');
+                          // Optionally, show an error message to the user
+                        }
+                      }
                     },
                     child: Column(
                       children: [
-                        Icon(
-                          Icons.lock_open,
-                          color: Colors.white,
+                        Icon(Icons.lock_open, color: Colors.white),
+                        Text(
+                          'LOGOUT',
+                          style: GoogleFonts.lato(color: Colors.white, fontSize: 10),
                         ),
-                        Text('LOGOUT',
-                            style: GoogleFonts.lato(
-                                color: Colors.white, fontSize: 10)),
                       ],
                     ),
                   ),
@@ -181,6 +215,9 @@ class DoctorDashboardScreen extends StatelessWidget {
                     title: Text('Logout'),
                     onTap: () async {
                       await _auth.signOut();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
                     },
                   ),
                 )
@@ -191,13 +228,13 @@ class DoctorDashboardScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 5.0, right: 5),
+                  padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 8.0),
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 8.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -226,7 +263,7 @@ class DoctorDashboardScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'NEW REQUEST REFERRAL',
+                                          'NEW REQUEST',
                                           style: GoogleFonts.lato(
                                             textStyle: TextStyle(
                                                 fontSize: 15,
@@ -263,8 +300,78 @@ class DoctorDashboardScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            height: 100,
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10,
+                                      left: 20,
+                                      right: 30
+                                  ),
+                                  child: Icon(
+                                    Icons.file_open,
+                                    size: 100,
+                                    color: Colors.orange.shade400,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'REJECTED REQUEST',
+                                          style: GoogleFonts.lato(
+                                            textStyle: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w900
+                                            ),
+                                          ),
+                                        ),
+                                        FutureBuilder<int>(
+                                          future: getTotalReject(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return CircularProgressIndicator();
+                                            }
+                                            if (snapshot.hasError) {
+                                              return Text('Error: ${snapshot.error}');
+                                            }
+                                            return Text(
+                                              snapshot.data.toString(),
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 8.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -293,7 +400,7 @@ class DoctorDashboardScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'ATTENDED REQUEST',
+                                          'APPROVED REQUEST',
                                           style: GoogleFonts.lato(
                                             textStyle: TextStyle(
                                                 fontSize: 15,

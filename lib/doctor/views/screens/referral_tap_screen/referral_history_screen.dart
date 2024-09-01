@@ -18,8 +18,9 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
     final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
         .collection('referral')
         .where("doctorAttending", isEqualTo: _auth.currentUser!.uid)
-        .where("status", isEqualTo: "Completed")
+        .where("status", whereIn: ["Completed", "Reject"])
         .snapshots();
+
     return StreamBuilder<QuerySnapshot>(
       stream: _usersStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -36,6 +37,8 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
             final referralData = snapshot.data!.docs[index];
+            final status = referralData['status'];
+
             return InkWell(
               onTap: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
@@ -49,7 +52,7 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.yellow.shade200,
+                      color: status =="Completed"?Colors.yellow.shade200: status=="Reject"?Colors.red.shade200: Colors.yellow.shade200,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
@@ -64,7 +67,7 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
                     subtitle: Text(referralData['patientIc']),
                     hoverColor: Colors.blue,
                     focusColor: Colors.blue,
-                    trailing: Icon(Icons.done_all)
+                    trailing: status=="Completed"?Icon(Icons.done_all):status=="Reject"?Icon(Icons.cancel):Icon(Icons.done_all),
                   ),
                 ),
               ),

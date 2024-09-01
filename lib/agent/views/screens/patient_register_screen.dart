@@ -104,7 +104,7 @@ class PatientRegisterScreen extends StatelessWidget {
                     });
                     // Send an email notification through Firestore's mail collection
                     await _firestore.collection('mail').doc(referralId).set({
-                      'to': 'musamirul.kpj@gmail.com',
+                      'to': 'itservices@kpjklang.com',
                       'from': _auth.currentUser!.email,
                       'message': {
                         'subject': '(New Referral created) ' + _referralProvider.referralData['patientName'],
@@ -118,10 +118,10 @@ class PatientRegisterScreen extends StatelessWidget {
                             <p><strong>Nationality:</strong> ${_referralProvider.referralData['patientNationality']}</p>
                             <p><strong>Description:</strong></p>
                             <p style="padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-                              ${_referralProvider.referralData['patientPhone']?.replaceAll('\n', '<br>')}
-                              ${_referralProvider.referralData['patientAddress']?.replaceAll('\n', '<br>')}
-                              ${_referralProvider.referralData['patientComplaints']?.replaceAll('\n', '<br>')}
-                              ${_referralProvider.referralData['reasonReferral']?.replaceAll('\n', '<br>')}
+                              ${_referralProvider.referralData['patientPhone']?.replaceAll('\n', '<br>')}<br/>
+                              ${_referralProvider.referralData['patientAddress']?.replaceAll('\n', '<br>')}<br/>
+                              ${_referralProvider.referralData['patientComplaints']?.replaceAll('\n', '<br>')}<br/>
+                              ${_referralProvider.referralData['reasonReferral']?.replaceAll('\n', '<br>')}<br/>
                             </p>
                             <p>
                               Please check your app to verify this patient and approve the referral.
