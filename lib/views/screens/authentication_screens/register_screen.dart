@@ -43,6 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   List<String> _userOption = [
     'Agent',
     'Consultant',
+    'GP Clinic',
   ];
 
   bool _passwordVisible = true;
@@ -94,6 +95,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
 
         EasyLoading.dismiss();
+      }else if(_userOptionStatus=='GP Clinic'){
+        await _userController
+            .registerGP(fullName, email, 'GP', password, _image)
+            .whenComplete(
+              () {
+            EasyLoading.dismiss();
+
+            setState(() {
+              _formKey.currentState!.reset();
+              _image = null;
+            });
+          },
+        );
+
+        EasyLoading.dismiss();
       }
 
     } else {
@@ -126,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   Text(
-                    'Explore the KPJ Klang Agent Exclusives',
+                    'Explore the KPJ Klang Exclusives',
                     style: GoogleFonts.lato(
                       textStyle: TextStyle(
                           color: Colors.brown, fontSize: 14, letterSpacing: .2),
@@ -163,7 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Full Name',
+                      _userOptionStatus=="GP Clinic"?'Clinic Name':"Full Name",
                       style: GoogleFonts.nunitoSans(
                         textStyle: TextStyle(
                             fontWeight: FontWeight.w600, letterSpacing: .2),
@@ -189,10 +205,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
-                      labelText: 'Enter your full name',
+                      labelText: _userOptionStatus=="GP Clinic"?'Enter Clinic Name':"Enter your full name",
                       labelStyle: GoogleFonts.getFont("Nunito Sans",
                           fontSize: 14, letterSpacing: 0.1),
-                      prefixIcon: Icon(Icons.person),
+                      prefixIcon: _userOptionStatus=="GP Clinic"?Icon(Icons.local_hospital_rounded):Icon(Icons.person),
                     ),
                   ),
                   SizedBox(height: 15,),
@@ -226,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
-                      labelText: 'Enter your email',
+                      labelText: _userOptionStatus=="GP Clinic"?'Enter Clinic Email':"Enter your email",
                       labelStyle: GoogleFonts.getFont("Nunito Sans",
                           fontSize: 14, letterSpacing: 0.1),
                       prefixIcon: Icon(Icons.email),
