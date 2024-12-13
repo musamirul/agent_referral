@@ -1,7 +1,7 @@
 import 'package:agent_referral/admin/admin_main_screen.dart';
 import 'package:agent_referral/agent/views/agent_main_screen.dart';
 import 'package:agent_referral/doctor/doctor_main_screen.dart';
-import 'package:agent_referral/gpclinic/views/gp_main_screen.dart';
+import 'package:agent_referral/gpclinic/gp_main_screen.dart';
 import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
 import 'package:agent_referral/views/screens/authentication_screens/register_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
