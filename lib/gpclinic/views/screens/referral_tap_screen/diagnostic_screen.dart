@@ -1,5 +1,8 @@
+import 'package:agent_referral/gpclinic/controller/diagnostic_referral_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uuid/uuid.dart';
 
 class DiagnosticScreen extends StatefulWidget {
   const DiagnosticScreen({super.key});
@@ -10,19 +13,30 @@ class DiagnosticScreen extends StatefulWidget {
 
 class _DiagnosticScreenState extends State<DiagnosticScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final DiagnosticReferralController _diagnosticReferralController = DiagnosticReferralController();
 
   List<String> _sexOption = ['Male', 'Female', 'Others'];
-  String? sex;
+  late String sex;
 
   List<String> _nationalityOption = ['Malaysian', 'Foreigner', 'Others'];
-  String? nationality;
+  late String nationality;
 
   late String name;
   late String identity;
   late String phone;
   late String address;
 
-  _saveDiagnosticReferral() {}
+  _saveDiagnosticReferral() async{
+    EasyLoading.show(status:'PLEASE WAIT');
+    String referralId = Uuid().v4();
+    if (_formKey.currentState!.validate()){
+      await _diagnosticReferralController.createDiagnostic(name, identity, phone, nationality, address, sex, referralId);
+      EasyLoading.dismiss();
+      setState(() {
+        _formKey.currentState!.reset();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +140,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   ).toList(),
                   onChanged: (value) {
                     setState(() {
-                      nationality = value;
+                      nationality = value!;
                     });
                   },
                 ),
@@ -231,7 +245,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   ).toList(),
                   onChanged: (value) {
                     setState(() {
-                      sex = value;
+                      sex = value!;
                     });
                   },
                 ),

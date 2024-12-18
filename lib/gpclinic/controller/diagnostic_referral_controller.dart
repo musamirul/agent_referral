@@ -1,0 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+class DiagnosticReferralController {
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<String> createDiagnostic(
+      String name,
+      String identity,
+      String phone,
+      String nationality,
+      String address,
+      String gender,
+      String referralId
+      )async{
+    String res = 'some error occurred';
+    await _firestore.collection('referral').doc(referralId).set({
+      'clinicId' : _auth.currentUser?.uid,
+      'patientName' : name,
+      'patientIdentity' : identity,
+      'patientPhone' : phone,
+      'patientNationality' : nationality,
+      'patientGender' : gender,
+    });
+    return res;
+
+  }
+}
