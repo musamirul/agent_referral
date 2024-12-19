@@ -13,24 +13,27 @@ class DiagnosticScreen extends StatefulWidget {
 
 class _DiagnosticScreenState extends State<DiagnosticScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final DiagnosticReferralController _diagnosticReferralController = DiagnosticReferralController();
+  final DiagnosticReferralController _diagnosticReferralController =
+      DiagnosticReferralController();
 
-  List<String> _sexOption = ['Male', 'Female', 'Others'];
-  late String sex;
+  final List<String> _sexOption = ['Male', 'Female', 'Others'];
+  String? sex;
 
-  List<String> _nationalityOption = ['Malaysian', 'Foreigner', 'Others'];
-  late String nationality;
+  final List<String> _nationalityOption = ['Malaysian', 'Foreigner', 'Others'];
+  String? nationality;
 
+  late String foreignNationality;
   late String name;
   late String identity;
   late String phone;
   late String address;
 
-  _saveDiagnosticReferral() async{
-    EasyLoading.show(status:'PLEASE WAIT');
+  _saveDiagnosticReferral() async {
+    EasyLoading.show(status: 'PLEASE WAIT');
     String referralId = Uuid().v4();
-    if (_formKey.currentState!.validate()){
-      await _diagnosticReferralController.createDiagnostic(name, identity, phone, nationality, address, sex, referralId);
+    if (_formKey.currentState!.validate()) {
+      await _diagnosticReferralController.createDiagnostic(name, identity,
+          phone, nationality!, foreignNationality, address, sex!, referralId);
       EasyLoading.dismiss();
       setState(() {
         _formKey.currentState!.reset();
@@ -42,6 +45,29 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Stack(children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/header.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+              child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.blue.withOpacity(0.7),
+                  Colors.orange.withOpacity(0.6)
+                ],begin: Alignment.topCenter,end: Alignment.bottomCenter
+              ),
+            ),
+          ))
+        ]),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 70),
         child: SingleChildScrollView(
@@ -153,6 +179,9 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                         return null;
                       }
                     },
+                    onChanged: (value) {
+                      foreignNationality = value;
+                    },
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -253,10 +282,10 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   height: 10,
                 ),
                 ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.brown,
-                    fixedSize: Size(300, 30),
-                  ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.brown,
+                      fixedSize: Size(300, 30),
+                    ),
                     onPressed: () {
                       _saveDiagnosticReferral();
                     },

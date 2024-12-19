@@ -2,6 +2,7 @@ import 'package:agent_referral/gpclinic/views/feedback_screen.dart';
 import 'package:agent_referral/gpclinic/views/gp_home_screen.dart';
 import 'package:agent_referral/gpclinic/views/hospital_info_screen.dart';
 import 'package:agent_referral/gpclinic/views/patient_register_screen.dart';
+import 'package:agent_referral/gpclinic/views/patient_registered_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class _GpMainScreenState extends State<GpMainScreen> {
   int _pageIndex =0;
   List<Widget> _pages = [
     GpHomeScreen(),
-    PatientRegisterScreen(),
+    PatientRegisteredListScreen(),
     PatientRegisterScreen(),
     HospitalInfoScreen(),
     FeedbackScreen(),

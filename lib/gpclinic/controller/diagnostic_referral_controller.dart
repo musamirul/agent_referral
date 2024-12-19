@@ -13,18 +13,22 @@ class DiagnosticReferralController {
       String identity,
       String phone,
       String nationality,
+      String foreignNationality,
       String address,
       String gender,
       String referralId
       )async{
     String res = 'some error occurred';
-    await _firestore.collection('referral').doc(referralId).set({
+    await _firestore.collection('referralDID').doc(referralId).set({
       'clinicId' : _auth.currentUser?.uid,
       'patientName' : name,
       'patientIdentity' : identity,
       'patientPhone' : phone,
       'patientNationality' : nationality,
+      'foreignNationality' : foreignNationality,
       'patientGender' : gender,
+      'dateCreated' : DateTime.now(),
+      'referralId' : referralId,
     });
     return res;
 
