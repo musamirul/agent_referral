@@ -21,6 +21,7 @@ class DiagnosticReferralController {
     String res = 'some error occurred';
     await _firestore.collection('referralDID').doc(referralId).set({
       'clinicId' : _auth.currentUser?.uid,
+      'status' : 'Pending',
       'patientName' : name,
       'patientIdentity' : identity,
       'patientPhone' : phone,
@@ -28,6 +29,7 @@ class DiagnosticReferralController {
       'foreignNationality' : foreignNationality,
       'patientGender' : gender,
       'dateCreated' : DateTime.now(),
+      'staffAttending' : 'empty',
       'referralId' : referralId,
     });
     return res;
