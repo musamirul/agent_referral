@@ -27,6 +27,7 @@ class DiagnosticReferralController {
       'patientPhone' : phone,
       'patientNationality' : nationality,
       'foreignNationality' : foreignNationality,
+      'patientAddress' : address,
       'patientGender' : gender,
       'dateCreated' : DateTime.now(),
       'staffAttending' : 'empty',

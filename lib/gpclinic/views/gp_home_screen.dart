@@ -8,6 +8,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../agent/views/widgets/banner_widget.dart';
+import '../../agent/views/widgets/facility_widget.dart';
+import '../../agent/views/widgets/total_refer_widget.dart';
+
 class GpHomeScreen extends StatelessWidget {
   const GpHomeScreen({super.key});
 
@@ -187,6 +191,42 @@ class GpHomeScreen extends StatelessWidget {
                 )
               ],
             ),
+          ),
+          body: SingleChildScrollView(
+            child: Stack(children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/building.png',
+                  // Make sure to add the image in the assets folder and specify it in pubspec.yaml
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0,right: 15),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      BannerWidget(),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 30.0),
+                      //   child: WelcomeText(),
+                      // ),
+                      SizedBox(height: 10,),
+                      FacilityWidget(),
+                      SizedBox(height: 10,),
+                      // TotalReferWidget(),
+                    ],
+                  ),
+                ),
+              ),
+            ],),
           ),
         );
       },
