@@ -94,6 +94,7 @@ flutter:
    - assets/images/pharmacy.jpg
    - assets/images/header.jpg
    - assets/images/systemflow.jpg
+   - assets/images/person_circle.png
 # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

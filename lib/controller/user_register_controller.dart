@@ -117,4 +117,31 @@ class UserController{
     return res;
   }
 
+  Future<String> registerStaff(
+      String fullName,
+      String email,
+      String userType,
+      String password,
+      String department,
+      Uint8List? image,
+      )async
+  {
+    String res = 'some error occured';
+    //Create the new user
+    UserCredential cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    //SAVE IMAGE TO STORAGE
+    String storeImage = await _uploadUserImageToStorage(image, cred.user!.uid);
+    //SAVE DATA TO CLOUD FIRESTORE
+    await _firestore.collection('users').doc(cred.user!.uid).set({
+      'fullName' : fullName,
+      'email' : email,
+      'image' : storeImage,
+      'approved' : true,
+      'userType' : userType,
+      'userDept' : department,
+      'userId' : cred.user!.uid,
+    });
+    return res;
+  }
+
 }
