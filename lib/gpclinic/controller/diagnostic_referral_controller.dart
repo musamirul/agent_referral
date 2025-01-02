@@ -16,6 +16,8 @@ class DiagnosticReferralController {
       String foreignNationality,
       String address,
       String gender,
+      String didOption,
+      String remarks,
       String referralId
       )async{
     String res = 'some error occurred';
@@ -29,6 +31,8 @@ class DiagnosticReferralController {
       'foreignNationality' : foreignNationality,
       'patientAddress' : address,
       'patientGender' : gender,
+      'didOption' : didOption,
+      'remarks' : remarks,
       'dateCreated' : DateTime.now(),
       'staffAttending' : 'empty',
       'referralId' : referralId,

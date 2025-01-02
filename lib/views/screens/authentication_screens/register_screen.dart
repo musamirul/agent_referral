@@ -43,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   List<String> _userOption = [
     'Consultant',
     'GP Clinic',
-    'User'
+    'Agent'
   ];
 
   bool _passwordVisible = true;

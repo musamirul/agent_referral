@@ -1,4 +1,4 @@
-import 'package:agent_referral/agent/views/screens/patient_tap_screen/patient_detail.dart';
+import 'package:agent_referral/gpclinic/views/screens/patient_tap_screen/patient_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +16,8 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
-        .collection('referral')
-        .where("doctorAttending", isEqualTo: _auth.currentUser!.uid)
+        .collection('referralDID')
+        .where("staffAttending", isEqualTo: _auth.currentUser!.uid)
         .where("status", whereIn: ["Completed", "Reject"])
         .snapshots();
 
@@ -32,7 +32,7 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
           return Center(child: Text("Loading"));
         }
 
-        return  snapshot.data!.docs.length == 0 ? Center(child: Text('No current referral'),):ListView.builder(
+        return snapshot.data!.docs.length == 0 ? Center(child: Text('No current referral'),): ListView.builder(
           shrinkWrap: true,
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
@@ -64,7 +64,7 @@ class _ReferralHistoryScreenState extends State<ReferralHistoryScreen> {
                       ]),
                   child: ListTile(
                     title: Text(referralData['patientName']),
-                    subtitle: Text(referralData['patientIc']),
+                    subtitle: Text(referralData['patientIdentity']),
                     hoverColor: Colors.blue,
                     focusColor: Colors.blue,
                     trailing: status=="Completed"?Icon(Icons.done_all):status=="Reject"?Icon(Icons.cancel):Icon(Icons.done_all),

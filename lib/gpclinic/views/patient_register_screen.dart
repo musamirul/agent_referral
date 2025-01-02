@@ -108,9 +108,10 @@ class PatientRegisterScreen extends StatelessWidget {
 
 
               InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => PhysioScreen(),));
-                },
+                // onTap: () {
+                //   Navigator.of(context).push(
+                //       MaterialPageRoute(builder: (context) => PhysioScreen(),));
+                // },
                 child: Padding(
                   padding: EdgeInsets.only(left: 8, right: 8, top: 8),
                   child: Container(
@@ -135,7 +136,7 @@ class PatientRegisterScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Physiotherapy Services',
+                          'Physiotherapy Services (unavailable)',
                           style: GoogleFonts.lato(
                             textStyle: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w900),

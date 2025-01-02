@@ -22,18 +22,22 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
   final List<String> _nationalityOption = ['Malaysian', 'Foreigner', 'Others'];
   String? nationality;
 
+  final List<String> _didOption = ['X-Rays', 'Ct Scans', 'MRI', 'Ultrasound', 'Mammography', 'Fluoroscopy'];
+  String? did;
+
   late String foreignNationality;
   late String name;
   late String identity;
   late String phone;
   late String address;
+  late String remarks;
 
   _saveDiagnosticReferral() async {
     EasyLoading.show(status: 'PLEASE WAIT');
     String referralId = Uuid().v4();
     if (_formKey.currentState!.validate()) {
       await _diagnosticReferralController.createDiagnostic(name, identity,
-          phone, nationality!, foreignNationality, address, sex!, referralId);
+          phone, nationality!, foreignNationality, address, sex!,did!,remarks, referralId);
       EasyLoading.dismiss();
       setState(() {
         _formKey.currentState!.reset();
@@ -76,7 +80,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Text(
                   'Patient Information',
@@ -195,7 +199,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                     ),
                     textInputAction: TextInputAction.next,
                   ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 TextFormField(
                   decoration: InputDecoration(
                     fillColor: Colors.white,
@@ -279,7 +283,73 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                   },
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 15,
+                ),
+                Text(
+                  'Diagnostic Registration',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                DropdownButtonFormField<String>(
+                  hint: Text('Select Diagnostic'),
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    labelText: 'Diagnostic',
+                    labelStyle: GoogleFonts.getFont("Nunito Sans",
+                        fontSize: 14, letterSpacing: 0.1),
+                  ),
+                  items: _didOption.map<DropdownMenuItem<String>>(
+                        (String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      did = value!;
+                    });
+                  },
+                ),
+                SizedBox(height: 5),
+                TextFormField(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    prefixIcon: Icon(Icons.text_snippet_outlined),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    labelText: 'Remarks',
+                    labelStyle: GoogleFonts.getFont("Nunito Sans",
+                        fontSize: 14, letterSpacing: 0.1),
+                  ),
+                  onChanged: (value) {
+                    remarks = value;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Enter Home Address';
+                    } else {
+                      return null;
+                    }
+                  },
+                  maxLength: 800,
+                  maxLines: 3,
+                  textInputAction: TextInputAction.next,
                 ),
                 ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(

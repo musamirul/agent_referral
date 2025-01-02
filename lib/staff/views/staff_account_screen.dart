@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DoctorAccountScreen extends StatelessWidget {
-  const DoctorAccountScreen({super.key});
+class StaffAccountScreen extends StatelessWidget {
+  const StaffAccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -161,10 +161,10 @@ class DoctorAccountScreen extends StatelessWidget {
                       SizedBox(
                         height: 10,
                       ),
-                      Text('User Type',
+                      Text('Department',
                           style: TextStyle(
                               fontSize: 10, color: Colors.grey.shade800)),
-                      Text(data['userType'],
+                      Text(data['userDept'],
                           style: GoogleFonts.roboto(
                               fontSize: 13, fontWeight: FontWeight.bold)),
                     ],
@@ -177,6 +177,15 @@ class DoctorAccountScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       SizedBox(height: 20,),
+                      Text('User Type',
+                          style: TextStyle(
+                              fontSize: 10, color: Colors.grey.shade800)),
+                      Text(data['userType'],
+                          style: GoogleFonts.roboto(
+                              fontSize: 13, fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Text('Status',
                           style: TextStyle(
                               fontSize: 10, color: Colors.grey.shade800)),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -140,29 +141,117 @@ class _PatientDetailState extends State<PatientDetail> {
   }
 
   Widget _buildPatientInfoSection(Map<String,dynamic> data){
+    Timestamp? firebaseTimestamp = data['dateCreated'] as Timestamp?;
+    DateTime? dateTime = firebaseTimestamp?.toDate();
+    String formattedDate = DateFormat("MMMM d, y 'at' hh:mm:ss a")
+        .format(dateTime!.toUtc());
+
     return Column(
       children: [
-        SizedBox(height: 10,),
-        Container(
-          child: Text('Patient Information', style: GoogleFonts.roboto(letterSpacing: 0.9,fontWeight: FontWeight.w900,color: Colors.brown.shade500,fontSize: 15),),
-        ),
-        ListTile(
-          leading: Icon(Icons.flag),
-          title: Text(data['patientNationality']),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        ),
-        ListTile(
-          leading: Icon(Icons.safety_divider),
-          title: Text(data['patientGender']),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text(data['patientAddress']),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  'Patient Details',
+                  style: GoogleFonts.lato(
+                      color: Colors.orange.shade900),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Name',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['patientName'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Identity Number',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['patientIdentity'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Gender',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['patientGender'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Nationality',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['patientNationality'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Contact Number',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['patientPhone'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Home Address',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['patientAddress'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              Center(
+                child: Text(
+                  'Patient Diagnostic Detail',
+                  style: GoogleFonts.lato(
+                      color: Colors.orange.shade900),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Diagnostic Imaging Option',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['didOption'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Remarks',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(data['remarks'],
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 10,
+              ),
+              Text('Date Created',
+                  style: TextStyle(
+                      fontSize: 10, color: Colors.grey.shade800)),
+              Text(formattedDate,
+                  style: GoogleFonts.roboto(
+                      fontSize: 13, fontWeight: FontWeight.bold)),
+
+            ],
+          ),
         ),
       ],
     );

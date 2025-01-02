@@ -9,6 +9,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../staff/staff_main_screen.dart';
+
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
 
@@ -68,6 +70,9 @@ class _LandingScreenState extends State<LandingScreen> {
 
               if (snapshot.data!['userType'] == 'GP' && snapshot.data!['approved'] == true) {
                 return GpMainScreen();
+              }
+              if (snapshot.data!['userType'] == 'Staff' && snapshot.data!['approved'] == true) {
+                return StaffMainScreen();
               }
 
               return _buildPendingApprovalScreen(userData);
