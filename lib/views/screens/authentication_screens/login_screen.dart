@@ -28,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    super.initState();
     _passwordVisible = false;
   }
   
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isLoading = false;
         });
-        return showSnack(context, res);
+        return showSnack(context, 'Wrong Password or Email');
       }
     } else {
       setState(() {
