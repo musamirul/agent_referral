@@ -3,42 +3,66 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class UserDetailScreen extends StatelessWidget {
+class UserDetailScreen extends StatefulWidget {
   const UserDetailScreen({super.key, required this.userId});
 
   final String userId;
 
   @override
-  Widget build(BuildContext context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    final CollectionReference users = FirebaseFirestore.instance.collection('users');
+  State<UserDetailScreen> createState() => _UserDetailScreenState();
+}
 
+class _UserDetailScreenState extends State<UserDetailScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CollectionReference users = FirebaseFirestore.instance.collection('users');
+  late Future<String?> _membershipNo;
 
-    Future<String?> getMembershipNo() async {
-      try {
-        QuerySnapshot querySnapshot = await _firestore
-            .collection('membership')
-            .where("agentId", isEqualTo: userId)
-            .get();
+  @override
+  void initState() {
+    // TODO: implement initState
+    _membershipNo = getMembershipNo();
+    super.initState();
 
-        // Check if the query returns any documents
-        if (querySnapshot.docs.isNotEmpty) {
-          return querySnapshot.docs.first['membershipNo'] as String;
-        } else {
-          // Return null if no documents match
-          return null;
-        }
-      } catch (e) {
-        // Log and return null in case of error
-        print("Error fetching membership number: $e");
+  }
+  Future<String?> getMembershipNo() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('membership')
+          .where("userId", isEqualTo: widget.userId)
+          .get();
+
+      // Check if the query returns any documents
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['membershipId'] as String;
+      } else {
+        // Return null if no documents match
         return null;
       }
+    } catch (e) {
+      // Log and return null in case of error
+      print("Error fetching membership number: $e");
+      return null;
     }
+  }
+
+  Future<int> getTotalMembership() async{
+    QuerySnapshot querySnapshot = await _firestore.collection('membership').get();
+    return querySnapshot.docs.length;
+  }
+
+  Future<String> generateMembershipId() async {
+    int totalMembership = await getTotalMembership();
+    String numberPart = (totalMembership +1).toString().padLeft(8,'0');
+    return 'klgsh-$numberPart';
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     //Combined Futruee
     return FutureBuilder<DocumentSnapshot>(
-      future: users.doc(userId).get(),
+      future: users.doc(widget.userId).get(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -201,7 +225,7 @@ class UserDetailScreen extends StatelessWidget {
                                           padding:
                                           const EdgeInsets.only(left: 8.0),
                                           child: Text(
-                                            data['fullName']
+                                            data['fullName'].toString().toUpperCase()
                                                 .toString()
                                                 .toUpperCase(),
                                             style: GoogleFonts.lato(
@@ -252,7 +276,7 @@ class UserDetailScreen extends StatelessWidget {
                                               color: Colors.white, fontSize: 10),
                                         ),
                                           FutureBuilder<String?>(
-                                            future: getMembershipNo(),
+                                            future: _membershipNo,
                                             builder: (context, snapshot) {
                                               if (snapshot.connectionState == ConnectionState.waiting) {
                                                 // Show a loading indicator while waiting for the Future
@@ -274,12 +298,26 @@ class UserDetailScreen extends StatelessWidget {
                                                 );
                                               } else {
                                                 // Handle the case where no data is found
-                                                return Card(
-                                                    color: Colors.orange.shade900,
-                                                    child: Padding(
-                                                    padding: const EdgeInsets.only(top: 3.0,bottom: 3,left: 8,right: 8),
-                                              child: Text('Add',style: TextStyle(color: Colors.white),),
-                                              ));
+                                                return InkWell(
+                                                  onTap: () async{
+                                                    String membershipId = await generateMembershipId();
+
+                                                    await _firestore.collection('membership').doc(widget.userId).set({
+                                                      'userId' : widget.userId,
+                                                      'membershipId' : membershipId,
+                                                      'dateRegistered' : DateTime.now(),
+                                                    });
+                                                    setState(() {
+                                                      _membershipNo = getMembershipNo();
+                                                    });
+                                                  },
+                                                  child: Card(
+                                                      color: Colors.orange.shade900,
+                                                      child: Padding(
+                                                      padding: const EdgeInsets.only(top: 3.0,bottom: 3,left: 8,right: 8),
+                                                                                                child: Text('Add',style: TextStyle(color: Colors.white),),
+                                                                                                )),
+                                                );
                                               }
                                             },
                                           ),

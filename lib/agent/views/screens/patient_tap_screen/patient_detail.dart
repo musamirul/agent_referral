@@ -320,23 +320,39 @@ class _PatientDetailState extends State<PatientDetail> {
                           ),
                         ),
                       ),
-                _buildPatientInfoSection(data),
+                Container(decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white),
+                  child: _buildPatientInfoSection(data),
+                ),
                 Divider(thickness: 2, color: Colors.grey.shade200),
-                _buildInsuranceInfoSection(data),
+                Container(decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white),
+                  child: _buildInsuranceInfoSection(data),
+                ),
                 Divider(thickness: 2, color: Colors.grey.shade200),
-                _buildReferralReasonSection(data),
-                Divider(thickness: 2, color: Colors.grey.shade200),
-                data['fileUrlList'] != null
-                    ? _buildDocumentDownloadSection(urls, context)
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Center(
-                            child: Text(
+                Container(decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white),
+                  child: _buildReferralReasonSection(data),
+                ),
+                Container(decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.orange.shade100),
+                  child: data['fileUrlList'] != null
+                      ? _buildDocumentDownloadSection(urls, context)
+                      : Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Center(
+                        child: Text(
                           'No Document Attached',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         )),
-                      )
+                  ),
+                ),
+
               ],
             ),
           ),
@@ -349,7 +365,7 @@ class _PatientDetailState extends State<PatientDetail> {
     return Column(
       children: [
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         Container(
           child: Text(
@@ -362,29 +378,61 @@ class _PatientDetailState extends State<PatientDetail> {
             ),
           ),
         ),
-        ListTile(
-          leading: Icon(Icons.flag),
-          title: Text(data['patientNationality']),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        ),
-        ListTile(
-          leading: Icon(Icons.safety_divider),
-          title: Text(data['patientGender']),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        ),
-        ListTile(
-          leading: Icon(Icons.home),
-          title: Text(data['patientAddress']),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        ),
-        ListTile(
-          leading: Icon(Icons.face),
-          title: Text('${data['patientAge']} Years Old'),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Nationality',
+                        style: TextStyle(
+                            fontSize: 10, color: Colors.grey.shade800)),
+                    Text(data['patientNationality'],
+                        style: GoogleFonts.roboto(
+                            fontSize: 13, fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Gender',
+                        style: TextStyle(
+                            fontSize: 10, color: Colors.grey.shade800)),
+                    Text(data['patientGender'],
+                        style: GoogleFonts.roboto(
+                            fontSize: 13, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15,right: 15,top: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Age',
+                        style: TextStyle(
+                            fontSize: 10, color: Colors.grey.shade800)),
+                    Text('${data['patientAge']} Years Old',
+                        style: GoogleFonts.roboto(
+                            fontSize: 13, fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Home Address',
+                        style: TextStyle(
+                            fontSize: 10, color: Colors.grey.shade800)),
+                    Text(data['patientAddress'],
+                        style: GoogleFonts.roboto(
+                            fontSize: 13, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -393,6 +441,9 @@ class _PatientDetailState extends State<PatientDetail> {
   Widget _buildInsuranceInfoSection(Map<String, dynamic> data) {
     return Column(
       children: [
+        SizedBox(
+          height: 5,
+        ),
         Text(
           'INSURANCE INFORMATION',
           style: GoogleFonts.roboto(
@@ -402,28 +453,89 @@ class _PatientDetailState extends State<PatientDetail> {
             fontSize: 15,
           ),
         ),
-        if (data['patientPayment'] == "NO")
-          ListTile(
-            leading: Icon(Icons.health_and_safety),
-            title: Text(data['patientIns']),
-            dense: true,
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (data['patientPayment'] == "NO")
+                    Flex(direction: Axis.horizontal,children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
+                          direction: Axis.vertical,children: [
+
+                            if (data['patientPayment'] == "NO")
+                              Text('Insurance Name',
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.grey.shade800)),
+                            Text(data['patientIns'],
+                              style: GoogleFonts.roboto(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+
+                          ],),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
+                          direction: Axis.vertical,children: [
+
+                            if (data['patientPayment'] == "NO")
+                              Text('Insurance Number',
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.grey.shade800)),
+                            Text(data['patientInsNumber'],
+                              style: GoogleFonts.roboto(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+
+                          ],),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
+                          direction: Axis.vertical,children: [
+
+                            if (data['patientPayment'] == "NO")
+                              Text('Policy Period',
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.grey.shade800)),
+                            Text(data['patientPolicyPeriod'],
+                              style: GoogleFonts.roboto(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+
+                          ],),
+                      ),
+                    ],),
+
+                    if (data['patientPayment'] == "YES") Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text('Self Payment Patient : YES'.toUpperCase(),
+                          style: GoogleFonts.roboto(
+                          fontSize: 13, fontWeight: FontWeight.bold),),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        if (data['patientPayment'] == "NO")
-          ListTile(
-            leading: Icon(Icons.shield),
-            title: Text(data['patientInsNumber']),
-            dense: true,
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          ),
-        if (data['patientPayment'] == "NO")
-          ListTile(
-            leading: Icon(Icons.policy),
-            title: Text(data['patientPolicyPeriod']),
-            dense: true,
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          ),
-        if (data['patientPayment'] == "YES") Text('Self Payment Patient'),
+        ),
+        // if (data['patientPayment'] == "NO")
+        //   ListTile(
+        //     leading: Icon(Icons.policy),
+        //     title: Text(data['patientPolicyPeriod']),
+        //     dense: true,
+        //     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        //   ),
+        // if (data['patientPayment'] == "YES") Text('Self Payment Patient'),
       ],
     );
   }
@@ -432,6 +544,7 @@ class _PatientDetailState extends State<PatientDetail> {
     return Container(
       child: Column(
         children: [
+          SizedBox(height: 5,),
           Text(
             'REFERRAL INFORMATION',
             style: GoogleFonts.roboto(
@@ -551,6 +664,7 @@ class _PatientDetailState extends State<PatientDetail> {
       List<String> urls, BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 5,),
         Text(
           'PATIENT DOCUMENT',
           style: GoogleFonts.roboto(

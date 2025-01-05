@@ -10,7 +10,30 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+
+    Future<String?> getMembershipNo() async {
+      try {
+        QuerySnapshot querySnapshot = await _firestore
+            .collection('membership')
+            .where("userId", isEqualTo: _auth.currentUser!.uid)
+            .get();
+
+        // Check if the query returns any documents
+        if (querySnapshot.docs.isNotEmpty) {
+          return querySnapshot.docs.first['membershipId'] as String;
+        } else {
+          // Return null if no documents match
+          return null;
+        }
+      } catch (e) {
+        // Log and return null in case of error
+        print("Error fetching membership number: $e");
+        return null;
+      }
+    }
 
     return FutureBuilder<DocumentSnapshot>(
       future: users.doc(_auth.currentUser!.uid).get(),
@@ -136,7 +159,7 @@ class AccountScreen extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(1),
                               child: Text(
-                                data['fullName'],
+                                data['fullName'].toString().toUpperCase(),
                                 style: TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.bold),
                               ),
@@ -255,12 +278,38 @@ class AccountScreen extends StatelessWidget {
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 10),
                                       ),
-                                      Text(
-                                        data['agentNumber'],
-                                        style: GoogleFonts.lato(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 14),
+                                      FutureBuilder<String?>(
+                                        future: getMembershipNo(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            // Show a loading indicator while waiting for the Future
+                                            return CircularProgressIndicator();
+                                          } else if (snapshot.hasError) {
+                                            // Display an error message if something goes wrong
+                                            return Text(
+                                              'Error',
+                                              style: TextStyle(color: Colors.red),
+                                            );
+                                          } else if (snapshot.hasData && snapshot.data != null) {
+                                            // Display the fetched membership number (now as a string)
+                                            return Text(
+                                              snapshot.data.toString(),
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 14),
+                                            );
+                                          } else {
+                                            // Handle the case where no data is found
+                                            return Text(
+                                              'Not Registered',
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 14),
+                                            );
+                                          }
+                                        },
                                       ),
                                     ],
                                   )
