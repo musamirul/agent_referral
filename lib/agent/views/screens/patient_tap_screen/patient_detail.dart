@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gradient_icon/gradient_icon.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 class PatientDetail extends StatefulWidget {
   const PatientDetail({super.key, required this.referralId});
@@ -22,25 +23,31 @@ class PatientDetail extends StatefulWidget {
 
 class _PatientDetailState extends State<PatientDetail> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  CollectionReference patient =
-      FirebaseFirestore.instance.collection('referral');
+  CollectionReference patient = FirebaseFirestore.instance.collection('referral');
   CollectionReference user = FirebaseFirestore.instance.collection('users');
   String doctorName = "";
   String agentName = "";
   bool isLoadingDoctorName = true;
+  List<String> urls = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
 
   Future<Map<String, dynamic>> fetchData() async {
     try {
       DocumentSnapshot patientSnapshot =
-          await patient.doc(widget.referralId).get();
+      await patient.doc(widget.referralId).get();
       Map<String, dynamic> data =
-          patientSnapshot.data() as Map<String, dynamic>;
+      patientSnapshot.data() as Map<String, dynamic>;
 
       DocumentSnapshot doctorSnapshot =
-          await user.doc(data['doctorAttending']).get();
+      await user.doc(data['doctorAttending']).get();
       if (doctorSnapshot.exists) {
         doctorName =
-            (doctorSnapshot.data() as Map<String, dynamic>)['fullName'];
+        (doctorSnapshot.data() as Map<String, dynamic>)['fullName'];
       }
 
       DocumentSnapshot agentSnapshot = await user.doc(data['agentId']).get();
@@ -53,6 +60,149 @@ class _PatientDetailState extends State<PatientDetail> {
       print("Error fetching data: $e");
       throw e; // Re-throw the error to handle it in FutureBuilder
     }
+  }
+
+
+  Future<void> uploadFiles() async {
+    final int maxFileSize = 5 * 1024 * 1024; // 5MB
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+    );
+
+    if (result != null) {
+      EasyLoading.show(status: 'Uploading files...');
+      List<File> validFiles = result.files
+          .where((file) => File(file.path!).lengthSync() <= maxFileSize)
+          .map((file) => File(file.path!))
+          .toList();
+
+      List<String> newFileUrls = [];
+      try {
+        for (File file in validFiles) {
+          String fileName = file.path.split('/').last;
+          Reference storageRef = FirebaseStorage.instance.ref().child('patientDocument/$fileName');
+          UploadTask uploadTask = storageRef.putFile(file);
+
+          String downloadUrl = await (await uploadTask).ref.getDownloadURL();
+          newFileUrls.add(downloadUrl);
+        }
+
+        await patient.doc(widget.referralId).update({
+          'fileUrlList': FieldValue.arrayUnion(newFileUrls),
+        });
+
+        setState(() {
+          urls.addAll(newFileUrls);
+        });
+
+        EasyLoading.dismiss();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Files uploaded successfully!')),
+        );
+      } catch (e) {
+        EasyLoading.dismiss();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to upload files: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> openFileFromUrl(String url, String fileName) async {
+    try {
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/$fileName');
+
+      final response = await http.get(Uri.parse(url));
+      await file.writeAsBytes(response.bodyBytes);
+
+      await OpenFile.open(file.path);
+    } catch (e) {
+      print("Error opening file: $e");
+    }
+  }
+
+  Future<void> downloadFile(String url, String fileName) async {
+    if (await Permission.storage.request().isGranted) {
+      final dir = await getExternalStorageDirectories(type: StorageDirectory.downloads);
+      if (dir != null && dir.isNotEmpty) {
+        String savePath = '${dir.first.path}/$fileName';
+        await FlutterDownloader.enqueue(
+          url: url,
+          savedDir: dir.first.path,
+          fileName: fileName,
+          showNotification: true,
+          openFileFromNotification: true,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('File downloaded to $savePath')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission denied')),
+      );
+    }
+  }
+  Widget _buildDocumentSection() {
+    return Column(
+      children: [
+        SizedBox(height: 5,),
+        Text(
+          'PATIENT DOCUMENT',
+          style: GoogleFonts.roboto(
+            letterSpacing: 0.9,
+            fontWeight: FontWeight.w900,
+            color: Colors.brown.shade500,
+            fontSize: 15,
+          ),
+        ),
+        ElevatedButton.icon(
+          onPressed: uploadFiles,
+          label: Text(
+            'Add Document',
+            style: TextStyle(color: Colors.black),
+          ),
+          icon: Icon(Icons.add),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0,left: 10,right: 10),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: urls.length,
+            itemBuilder: (context, index) {
+              String url = urls[index];
+              String fileName = url.split('/').last.split('?').first;
+              return Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: ListTile(
+                    title: GestureDetector(
+                      onTap: () => openFileFromUrl(url, fileName),
+                      child: Text(
+                        fileName,
+                        style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.download),
+                      onPressed: () => downloadFile(url, fileName),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -242,84 +392,84 @@ class _PatientDetailState extends State<PatientDetail> {
 
                 data['doctorAttending'] != "empty"
                     ? Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Assign Doctor : ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
-                                    ),
-                                    Text(doctorName),
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Assign Agent : ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
-                                    ),
-                                    Text(agentName),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Assign Doctor : ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  ),
-                                  Text('Not Assigned Yet!'),
-                                ],
+                              Text(
+                                'Assign Doctor : ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15),
                               ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Assign Agent : ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  ),
-                                  Text(agentName),
-                                ],
-                              ),
+                              Text(doctorName),
                             ],
                           ),
-                        ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Assign Agent : ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15),
+                              ),
+                              Text(agentName),
+                            ],
+                          ),
+                        ],
                       ),
+                    ),
+                  ),
+                )
+                    : Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Assign Doctor : ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text('Not Assigned Yet!'),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Assign Agent : ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                            Text(agentName),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Container(decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white),
@@ -341,7 +491,7 @@ class _PatientDetailState extends State<PatientDetail> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.orange.shade100),
                   child: data['fileUrlList'] != null
-                      ? _buildDocumentDownloadSection(urls, context)
+                      ? _buildDocumentSection()
                       : Padding(
                     padding: const EdgeInsets.only(top: 20.0),
                     child: Center(
@@ -360,7 +510,6 @@ class _PatientDetailState extends State<PatientDetail> {
       },
     );
   }
-
   Widget _buildPatientInfoSection(Map<String, dynamic> data) {
     return Column(
       children: [
@@ -465,62 +614,62 @@ class _PatientDetailState extends State<PatientDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (data['patientPayment'] == "NO")
-                    Flex(direction: Axis.horizontal,children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
-                          direction: Axis.vertical,children: [
+                      Flex(direction: Axis.horizontal,children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
+                            direction: Axis.vertical,children: [
 
-                            if (data['patientPayment'] == "NO")
-                              Text('Insurance Name',
-                                  style: TextStyle(
-                                      fontSize: 10, color: Colors.grey.shade800)),
-                            Text(data['patientIns'],
-                              style: GoogleFonts.roboto(
-                                  fontSize: 13, fontWeight: FontWeight.bold),
-                            ),
+                              if (data['patientPayment'] == "NO")
+                                Text('Insurance Name',
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.grey.shade800)),
+                              Text(data['patientIns'],
+                                style: GoogleFonts.roboto(
+                                    fontSize: 13, fontWeight: FontWeight.bold),
+                              ),
 
-                          ],),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
-                          direction: Axis.vertical,children: [
+                            ],),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
+                            direction: Axis.vertical,children: [
 
-                            if (data['patientPayment'] == "NO")
-                              Text('Insurance Number',
-                                  style: TextStyle(
-                                      fontSize: 10, color: Colors.grey.shade800)),
-                            Text(data['patientInsNumber'],
-                              style: GoogleFonts.roboto(
-                                  fontSize: 13, fontWeight: FontWeight.bold),
-                            ),
+                              if (data['patientPayment'] == "NO")
+                                Text('Insurance Number',
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.grey.shade800)),
+                              Text(data['patientInsNumber'],
+                                style: GoogleFonts.roboto(
+                                    fontSize: 13, fontWeight: FontWeight.bold),
+                              ),
 
-                          ],),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
-                          direction: Axis.vertical,children: [
+                            ],),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Flex(crossAxisAlignment: CrossAxisAlignment.start,
+                            direction: Axis.vertical,children: [
 
-                            if (data['patientPayment'] == "NO")
-                              Text('Policy Period',
-                                  style: TextStyle(
-                                      fontSize: 10, color: Colors.grey.shade800)),
-                            Text(data['patientPolicyPeriod'],
-                              style: GoogleFonts.roboto(
-                                  fontSize: 13, fontWeight: FontWeight.bold),
-                            ),
+                              if (data['patientPayment'] == "NO")
+                                Text('Policy Period',
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.grey.shade800)),
+                              Text(data['patientPolicyPeriod'],
+                                style: GoogleFonts.roboto(
+                                    fontSize: 13, fontWeight: FontWeight.bold),
+                              ),
 
-                          ],),
-                      ),
-                    ],),
+                            ],),
+                        ),
+                      ],),
 
                     if (data['patientPayment'] == "YES") Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text('Self Payment Patient : YES'.toUpperCase(),
-                          style: GoogleFonts.roboto(
-                          fontSize: 13, fontWeight: FontWeight.bold),),
+                        style: GoogleFonts.roboto(
+                            fontSize: 13, fontWeight: FontWeight.bold),),
                     ),
                   ],
                 ),
@@ -658,163 +807,5 @@ class _PatientDetailState extends State<PatientDetail> {
         ],
       ),
     );
-  }
-
-  Widget _buildDocumentDownloadSection(
-      List<String> urls, BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 5,),
-        Text(
-          'PATIENT DOCUMENT',
-          style: GoogleFonts.roboto(
-            letterSpacing: 0.9,
-            fontWeight: FontWeight.w900,
-            color: Colors.brown.shade500,
-            fontSize: 15,
-          ),
-        ),
-        ElevatedButton.icon(
-          onPressed: () => downloadAllFiles(urls, context),
-          icon: Icon(Icons.save),
-          label: Text('Download All Documents'),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: urls.length,
-            itemBuilder: (context, index) {
-              String url = urls[index];
-              String fileName = url
-                  .split('/')
-                  .last
-                  .split('?')
-                  .first; // Handling file name from URL
-              return Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white),
-                  child: ListTile(
-                    title: GestureDetector(
-                      onTap: () async {
-                        // Call your method to open the file. This could be using a PDF viewer, image viewer, or a web view.
-                        await openFileFromUrl(url, fileName);
-                      },
-                      child: Text(
-                        fileName,
-                        style: TextStyle(
-                          color: Colors.blue,
-                          // Makes the text look like a clickable link
-                          decoration:
-                              TextDecoration.underline, // Underlines the text
-                        ),
-                      ),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.save_alt),
-                      onPressed: () {
-                        downloadFile(url, fileName, context);
-                        print(url);
-                      },
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> openFileFromUrl(String url, String fileName) async {
-    try {
-      // Get the directory to save the file
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/$fileName');
-
-      // Download the file
-      final response = await http.get(Uri.parse(url));
-      await file.writeAsBytes(response.bodyBytes);
-
-      // Open the file
-      await openFile(file.path);
-    } catch (e) {
-      print("Error downloading or opening file: $e");
-    }
-  }
-
-  Future<void> openFile(String filePath) async {
-    try {
-      final result = await OpenFile.open(filePath);
-      if (result.type != ResultType.done) {
-        print("Failed to open file: ${result.message}");
-      }
-    } catch (e) {
-      print("Error opening file: $e");
-    }
-  }
-
-  Future<bool> requestStoragePermission() async {
-    var status = await Permission.storage.request();
-
-    if (status.isGranted) {
-      return true;
-    } else if (status.isDenied || status.isPermanentlyDenied) {
-      openAppSettings();
-      return false;
-    }
-    return false;
-  }
-
-  Future<void> downloadFile(
-      String url, String fileName, BuildContext context) async {
-    if (await requestStoragePermission()) {
-      try {
-        final externalDir = await getExternalStorageDirectories(
-            type: StorageDirectory.downloads);
-
-        if (externalDir != null && externalDir.isNotEmpty) {
-          String savePath = externalDir.first.path;
-
-          await FlutterDownloader.enqueue(
-            url: url,
-            savedDir: savePath,
-            fileName: fileName,
-            // Explicitly set the file name
-            showNotification: true,
-            openFileFromNotification: true,
-          );
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Downloaded $fileName to $savePath')),
-          );
-        } else {
-          throw Exception('Unable to access the Downloads directory.');
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to download file: $e')),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Storage permission is required to download files')),
-      );
-    }
-  }
-
-  Future<void> downloadAllFiles(List<String> urls, BuildContext context) async {
-    for (String url in urls) {
-      String fileName =
-          url.split('/').last.split('?').first; // Handling file name from URL
-      await downloadFile(url, fileName, context);
-      print(fileName);
-    }
   }
 }
