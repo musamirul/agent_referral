@@ -287,7 +287,7 @@ class _UserAddScreenState extends State<UserAddScreen> {
                   ),
                   hint: Text('Select Access Type'),
                   items: _userOption.map<DropdownMenuItem<String>>(
-                    (String value) {
+                        (String value) {
                       return DropdownMenuItem(value: value, child: Text(value));
                     },
                   ).toList(),

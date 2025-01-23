@@ -31,6 +31,19 @@ class UserController{
     }
   }
 
+  //FUNCTION TO CREATE USER WITHOUT CHANGING CURRENT USER SESSION
+  // Future<String> _createUserWithoutSwitchingSession({
+  //   required String fullName,
+  //   required String email,
+  //   required String password,
+  //   required String userType,
+  //   Uint8List? image,
+  //   String? department,
+  // })async{
+  //
+  // }
+
+
   //FUNCTION TO SAVE AGENT DATA
   Future<String> registerAgent(
       String fullName,

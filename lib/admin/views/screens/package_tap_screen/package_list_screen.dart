@@ -68,6 +68,7 @@ class _PackageListScreenState extends State<PackageListScreen> {
     final FirebaseStorage _storage = FirebaseStorage.instance;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: CupertinoSearchTextField(
           controller: _searchController,

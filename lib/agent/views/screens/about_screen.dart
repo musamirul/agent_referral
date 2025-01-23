@@ -1,3 +1,5 @@
+import 'package:agent_referral/views/screens/authentication_screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,6 +8,8 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(200),
@@ -14,11 +18,50 @@ class AboutScreen extends StatelessWidget {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10, top: 10),
-              child: Column(
-                children: [
-                  Icon(Icons.lock_open,color: Colors.white,),
-                  Text('LOGOUT',style: GoogleFonts.lato(color: Colors.white,fontSize: 10)),
-                ],
+              child: InkWell(
+                onTap: () async{
+                  bool shouldLogout = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Logout'),
+                        content:
+                        Text('Are you sure you want to log out?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(context).pop(false),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(context).pop(true),
+                            child: Text('Logout'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (shouldLogout) {
+                    try {
+                      await _auth.signOut();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => LoginScreen()),
+                      );
+                    } catch (e) {
+                      print('Error signing out: $e');
+                      // Optionally, show an error message to the user
+                    }
+                  }
+
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.lock_open,color: Colors.white,),
+                    Text('LOGOUT',style: GoogleFonts.lato(color: Colors.white,fontSize: 10)),
+                  ],
+                ),
               ),
             ),
           ],
@@ -73,8 +116,8 @@ class AboutScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.cloud_sync_rounded,size: 150,color: Colors.orange),
-                    Icon(Icons.phone_android_rounded,size: 100,color: Colors.orange.shade800),
+                    //Icon(Icons.cloud_sync_rounded,size: 50,color: Colors.orange),
+                    Icon(Icons.phone_android_rounded,size: 80,color: Colors.orange.shade800),
                   ],
                 ),
                 Text('About Ezzy Referral System',style: GoogleFonts.lato(fontSize: 25,fontWeight: FontWeight.bold),),
@@ -87,7 +130,7 @@ class AboutScreen extends StatelessWidget {
                 SizedBox(height: 10,),
                 Text('Main objectives are focused on improving the efficiency, accuracy, and overall quality of the referral process within the KPJ Klang Specialist Hospital system'),
                 SizedBox(height: 20,),
-                Image(image: AssetImage('assets/images/systemflow.jpg')),
+                //Image(image: AssetImage('assets/images/systemflow.jpg')),
               ],
             ),
           ),

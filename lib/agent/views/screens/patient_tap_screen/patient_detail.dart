@@ -34,8 +34,19 @@ class _PatientDetailState extends State<PatientDetail> {
   void initState() {
     super.initState();
     fetchData();
+    fetchInitialData();
   }
-
+  Future<void> fetchInitialData() async {
+    try {
+      DocumentSnapshot patientSnapshot = await patient.doc(widget.referralId).get();
+      Map<String, dynamic> data = patientSnapshot.data() as Map<String, dynamic>;
+      setState(() {
+        urls = data['fileUrlList'] != null ? List<String>.from(data['fileUrlList']) : [];
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
   Future<Map<String, dynamic>> fetchData() async {
     try {
       DocumentSnapshot patientSnapshot =
@@ -321,11 +332,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                   "Waiting for doctor to add to their records.",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 )),
-                          // if (data['status'] == "Approved")
-                          //   isLoadingDoctorName
-                          //       ? CircularProgressIndicator()
-                          //       : Container(padding: EdgeInsets.all(5),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
-                        ],
+                      ],
                       ),
                     ),
                   ),
@@ -336,60 +343,6 @@ class _PatientDetailState extends State<PatientDetail> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                // if (data['status'] == "Approved")
-                //   isLoadingDoctorName
-                //       ? CircularProgressIndicator()
-                //       : Padding(
-                //     padding: const EdgeInsets.only(top: 10),
-                //     child: Container(padding: EdgeInsets.all(10),decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.orange),child: Text("Waiting for "+ doctorName +" to verify patient",style: TextStyle(fontWeight: FontWeight.bold),)),
-                //   ),
-                // Padding(
-                //   padding: const EdgeInsets.all(15.0),
-                //   child: Container(
-                //     width: MediaQuery.of(context).size.width,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(5),
-                //       color: Colors.white,
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Colors.grey,
-                //           blurRadius: 10,
-                //           spreadRadius: 0.1,
-                //           offset: Offset(4, 5),
-                //           blurStyle: BlurStyle.normal,
-                //         ),
-                //       ],
-                //     ),
-                //     child: Column(
-                //       children: [
-                //         GradientIcon(
-                //           icon: Icons.person,
-                //           gradient: LinearGradient(
-                //             colors: [Colors.orange, Colors.yellow],
-                //             begin: Alignment.topLeft,
-                //             end: Alignment.bottomRight,
-                //           ),
-                //           size: 50,
-                //         ),
-                //         Padding(
-                //           padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
-                //           child: Text(
-                //             data['patientName'].toString().toUpperCase(),
-                //             style: TextStyle(fontSize: 17, letterSpacing: 1, fontWeight: FontWeight.bold),
-                //           ),
-                //         ),
-                //         Padding(
-                //           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 10),
-                //           child: Text(
-                //             data['patientIc'],
-                //             style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-
                 data['doctorAttending'] != "empty"
                     ? Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -677,14 +630,6 @@ class _PatientDetailState extends State<PatientDetail> {
             ],
           ),
         ),
-        // if (data['patientPayment'] == "NO")
-        //   ListTile(
-        //     leading: Icon(Icons.policy),
-        //     title: Text(data['patientPolicyPeriod']),
-        //     dense: true,
-        //     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        //   ),
-        // if (data['patientPayment'] == "YES") Text('Self Payment Patient'),
       ],
     );
   }

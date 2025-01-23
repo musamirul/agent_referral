@@ -17,6 +17,7 @@ class _AdminPackageScreenState extends State<AdminPackageScreen> {
       length: 2,
       child: Scaffold(
        appBar: AppBar(
+         automaticallyImplyLeading: false,
          title: Padding(
            padding: const EdgeInsets.only(top: 25),
            child: Center(child: Text('Package Management', style: GoogleFonts.roboto(letterSpacing: 0.9, fontWeight: FontWeight.w900,color: Colors.brown.shade900,fontSize: 26),)),
