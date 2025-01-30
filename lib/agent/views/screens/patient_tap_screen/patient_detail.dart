@@ -122,39 +122,80 @@ class _PatientDetailState extends State<PatientDetail> {
   }
 
   Future<void> openFileFromUrl(String url, String fileName) async {
+    EasyLoading.show(status: 'Opening file...');
+
     try {
-      final dir = await getTemporaryDirectory();
+      final dir = await getApplicationDocumentsDirectory(); // More persistent storage
       final file = File('${dir.path}/$fileName');
 
       final response = await http.get(Uri.parse(url));
-      await file.writeAsBytes(response.bodyBytes);
 
-      await OpenFile.open(file.path);
+      if (response.statusCode == 200) {
+        await file.writeAsBytes(response.bodyBytes);
+
+        EasyLoading.dismiss();
+        final result = await OpenFile.open(file.path);
+
+        if (result.type != ResultType.done) {
+          print("Error opening file: ${result.message}");
+        }
+      } else {
+        throw Exception("Failed to download file: ${response.statusCode}");
+      }
     } catch (e) {
+      EasyLoading.dismiss();
       print("Error opening file: $e");
     }
   }
 
-  Future<void> downloadFile(String url, String fileName) async {
-    if (await Permission.storage.request().isGranted) {
-      final dir = await getExternalStorageDirectories(type: StorageDirectory.downloads);
-      if (dir != null && dir.isNotEmpty) {
-        String savePath = '${dir.first.path}/$fileName';
-        await FlutterDownloader.enqueue(
-          url: url,
-          savedDir: dir.first.path,
-          fileName: fileName,
-          showNotification: true,
-          openFileFromNotification: true,
-        );
+  Future<void> downloadFile(BuildContext context, String url, String fileName) async {
+    EasyLoading.show(status: 'Downloading file...');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('File downloaded to $savePath')),
-        );
-      }
-    } else {
+    // Request storage permission (for Android 30+, use manageExternalStorage)
+    if (!await Permission.storage.request().isGranted) {
+      EasyLoading.dismiss();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Storage permission denied')),
+        const SnackBar(content: Text('Storage permission denied')),
+      );
+      return;
+    }
+
+    // Get a writable directory
+    Directory? directory;
+    if (Platform.isAndroid) {
+      directory = await getExternalStorageDirectory(); // Use this instead of `getExternalStorageDirectories`
+    } else if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    if (directory == null) {
+      EasyLoading.dismiss();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to get storage directory')),
+      );
+      return;
+    }
+
+    String savePath = '${directory.path}/$fileName';
+
+    // Enqueue download
+    final taskId = await FlutterDownloader.enqueue(
+      url: url,
+      savedDir: directory.path,
+      fileName: fileName,
+      showNotification: true,
+      openFileFromNotification: true,
+    );
+
+    if (taskId != null) {
+      EasyLoading.dismiss();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('File downloaded to $savePath')),
+      );
+    } else {
+      EasyLoading.dismiss();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Download failed')),
       );
     }
   }
@@ -204,7 +245,7 @@ class _PatientDetailState extends State<PatientDetail> {
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.download),
-                      onPressed: () => downloadFile(url, fileName),
+                      onPressed: () => downloadFile(context,url, fileName),
                     ),
                   ),
                 ),
@@ -448,10 +489,22 @@ class _PatientDetailState extends State<PatientDetail> {
                       : Padding(
                     padding: const EdgeInsets.only(top: 20.0),
                     child: Center(
-                        child: Text(
-                          'No Document Attached',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                        child: Column(
+                          children: [
+                            Text(
+                              'No Document Attached',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: uploadFiles,
+                              label: Text(
+                                'Add Document',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              icon: Icon(Icons.add),
+                            ),
+                          ],
                         )),
                   ),
                 ),

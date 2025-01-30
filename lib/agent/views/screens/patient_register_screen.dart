@@ -2,6 +2,7 @@ import 'package:agent_referral/agent/views/agent_main_screen.dart';
 import 'package:agent_referral/agent/views/screens/patient_tap_screen/patient_pending_screen.dart';
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/insurance_screen.dart';
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/patient_family_screen.dart';
+import 'package:agent_referral/agent/views/screens/referral_tap_screen/pdpa_screen.dart';
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/reasons_screen.dart';
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/upload_referral_screen.dart';
 import 'package:agent_referral/provider/referral_provider.dart';
@@ -31,7 +32,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen>
   void initState() {
     super.initState();
     // Initialize TabController
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() {
       // Update the state when the tab index changes
       setState(() {});
@@ -48,7 +49,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen>
   Widget build(BuildContext context) {
     final ReferralProvider _referralProvider = Provider.of<ReferralProvider>(context);
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Form(
         key: _formKey,
         child: Scaffold(
@@ -113,6 +114,16 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen>
                     ),
                   ),
                 ),
+                Tab(
+                  child: Text(
+                    'PDPA',
+                    style: GoogleFonts.oswald(
+                      color: Colors.brown.shade600,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -123,6 +134,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen>
               InsuranceScreen(),
               ReasonScreen(),
               UploadReferralScreen(),
+              PdpaScreen(),
             ],
           ),
           bottomSheet: Padding(
@@ -173,7 +185,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen>
                     );
                     _referralProvider.clearData();
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return PatientPendingScreen();
+                      return AgentMainScreen();
                     },));
                   }else{
                     ScaffoldMessenger.of(context).showSnackBar(

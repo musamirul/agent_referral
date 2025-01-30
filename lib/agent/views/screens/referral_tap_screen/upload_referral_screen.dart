@@ -108,10 +108,10 @@ class _UploadReferralScreenState extends State<UploadReferralScreen> with Automa
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              size: 150,
+              size: 100,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0),
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.orange,),
                 onPressed: pickFile,
