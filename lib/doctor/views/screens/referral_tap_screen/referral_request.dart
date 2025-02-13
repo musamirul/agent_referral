@@ -147,7 +147,7 @@ class _ReferralRequestScreenState extends State<ReferralRequestScreen> {
                                   });
 
                                   _firestore.collection('mail').doc(referralId).set({
-                                    'to': 'itservices@kpjklang.com',
+                                    'to': referralData['agentEmail'],
                                     'from': _auth.currentUser!.email,
                                     'message': {
                                       'subject': 'Referral :' + referralData['patientName']+', Approved by :'+_auth.currentUser!.email.toString(),

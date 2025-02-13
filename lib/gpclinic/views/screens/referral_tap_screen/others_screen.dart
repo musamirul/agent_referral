@@ -5,6 +5,8 @@ import 'package:agent_referral/agent/views/screens/referral_tap_screen/patient_f
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/pdpa_screen.dart';
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/reasons_screen.dart';
 import 'package:agent_referral/agent/views/screens/referral_tap_screen/upload_referral_screen.dart';
+import 'package:agent_referral/gpclinic/gp_main_screen.dart';
+import 'package:agent_referral/gpclinic/views/gp_home_screen.dart';
 import 'package:agent_referral/provider/referral_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,14 +16,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-class PatientRegisterScreen extends StatefulWidget {
-  PatientRegisterScreen({super.key});
+class OthersScreen extends StatefulWidget {
+  OthersScreen({super.key});
 
   @override
-  State<PatientRegisterScreen> createState() => _PatientRegisterScreenState();
+  State<OthersScreen> createState() => _PatientRegisterScreenState();
 }
 
-class _PatientRegisterScreenState extends State<PatientRegisterScreen>
+class _PatientRegisterScreenState extends State<OthersScreen>
     with TickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -213,7 +215,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen>
                     );
                     _referralProvider.clearData();
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return AgentMainScreen();
+                      return GpMainScreen();
                     },));
                   }else{
                     ScaffoldMessenger.of(context).showSnackBar(

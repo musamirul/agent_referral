@@ -149,6 +149,7 @@ class PdpaScreen extends StatelessWidget {
               child: Text(
                 "ii. We may refuse to comply with your request to access or make a correction in accordance with PDPA.",style: GoogleFonts.lato(fontSize: 12),),
             ),
+            SizedBox(height: 100,),
 
 
           ]),

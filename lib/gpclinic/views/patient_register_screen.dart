@@ -1,4 +1,5 @@
 import 'package:agent_referral/gpclinic/views/screens/referral_tap_screen/diagnostic_screen.dart';
+import 'package:agent_referral/gpclinic/views/screens/referral_tap_screen/others_screen.dart';
 import 'package:agent_referral/gpclinic/views/screens/referral_tap_screen/physio_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -93,13 +94,26 @@ class PatientRegisterScreen extends StatelessWidget {
                             color: Colors.orange.shade400,
                           ),
                         ),
-                        Text(
-                          'Diagnostic Imaging Services',
-                          style: GoogleFonts.lato(
-                            textStyle: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w900),
-                          ),
-                        )
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Diagnostic Imaging Services',
+                              style: GoogleFonts.lato(
+                                textStyle: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                            Text(
+                              'Refer to DID services only',
+                              style: GoogleFonts.lato(
+                                textStyle: TextStyle(
+                                    fontSize: 10, fontWeight: FontWeight.w500),
+                              ),
+                            )
+                          ],
+                        ),
+
                       ],
                     ),
                   ),
@@ -142,6 +156,59 @@ class PatientRegisterScreen extends StatelessWidget {
                                 fontSize: 15, fontWeight: FontWeight.w900),
                           ),
                         )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OthersScreen(),));
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8, top: 8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: 70,
+                    width: double.infinity,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 10,
+                            left: 20,
+                            right: 30,
+                          ),
+                          child: Icon(
+                            Icons.compare,
+                            size: 50,
+                            color: Colors.orange.shade400,
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Accidence & Emergency',
+                              style: GoogleFonts.lato(
+                                textStyle: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                            Text(
+                              'Refer to A&E services only',
+                              style: GoogleFonts.lato(
+                                textStyle: TextStyle(
+                                    fontSize: 10, fontWeight: FontWeight.w500),
+                              ),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   ),

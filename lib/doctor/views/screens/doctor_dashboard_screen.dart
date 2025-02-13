@@ -19,6 +19,11 @@ class DoctorDashboardScreen extends StatelessWidget {
       return querySnapshot.docs.length;
     }
 
+    Future<int> getTotalCurrent() async{
+      QuerySnapshot querySnapshot = await _firestore.collection('referral').where('status',isEqualTo: 'Approved').where('doctorAttending',isEqualTo: _auth.currentUser!.uid).get();
+      return querySnapshot.docs.length;
+    }
+
     Future<int> getTotalNew() async{
       QuerySnapshot querySnapshot = await _firestore.collection('referral').where('status',isEqualTo: 'Pending').where('doctorAttending',isEqualTo: 'empty').get();
       return querySnapshot.docs.length;
@@ -300,6 +305,75 @@ class DoctorDashboardScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            height: 100,
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10,
+                                      left: 20,
+                                      right: 30
+                                  ),
+                                  child: Icon(
+                                    Icons.file_open,
+                                    size: 100,
+                                    color: Colors.orange.shade400,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'CURRENT REQUEST',
+                                          style: GoogleFonts.lato(
+                                            textStyle: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w900
+                                            ),
+                                          ),
+                                        ),
+                                        FutureBuilder<int>(
+                                          future: getTotalCurrent(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return CircularProgressIndicator();
+                                            }
+                                            if (snapshot.hasError) {
+                                              return Text('Error: ${snapshot.error}');
+                                            }
+                                            return Text(
+                                              snapshot.data.toString(),
+                                              style: GoogleFonts.lato(
+                                                textStyle: TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
 
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0,right: 8.0,top: 8.0),

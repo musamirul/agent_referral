@@ -25,7 +25,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
   final List<String> _didOption = ['X-Rays', 'Ct Scans', 'MRI', 'Ultrasound', 'Mammography', 'Fluoroscopy'];
   String? did;
 
-  late String foreignNationality;
+  //late String foreignNationality;
   late String name;
   late String identity;
   late String phone;
@@ -37,7 +37,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
     String referralId = Uuid().v4();
     if (_formKey.currentState!.validate()) {
       await _diagnosticReferralController.createDiagnostic(name, identity,
-          phone, nationality!, foreignNationality, address, sex!,did!,remarks, referralId);
+          phone, nationality!, address, sex!,did!,remarks, referralId);
       EasyLoading.dismiss();
       setState(() {
         _formKey.currentState!.reset();
@@ -184,7 +184,7 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                       }
                     },
                     onChanged: (value) {
-                      foreignNationality = value;
+                      nationality = value;
                     },
                     decoration: InputDecoration(
                       fillColor: Colors.white,

@@ -36,6 +36,8 @@ class _ReferralGetScreenState extends State<ReferralGetScreen> {
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
             final referralData = snapshot.data!.docs[index];
+            final referralId = referralData['referralId'];
+
             return Dismissible(
               confirmDismiss: (direction) async {
                 return await showDialog(
@@ -137,6 +139,33 @@ class _ReferralGetScreenState extends State<ReferralGetScreen> {
                           },);
                           if(confirm){
                             _firestore.collection('referral').doc(referralData['referralId']).update({'status':'Completed'});
+                            _firestore.collection('mail').doc(referralId).set({
+                              'to': referralData['agentEmail'],
+                              'from': _auth.currentUser!.email,
+                              'message': {
+                                'subject': 'Referral :' + referralData['patientName']+', Completed by :'+_auth.currentUser!.email.toString(),
+                                'text': _auth.currentUser!.email! + '\n\n' +
+                                    'status: Completed',
+                                'html': '''
+                                          <div style="font-family: Arial, sans-serif; color: #333;">
+                                            <p><strong>From:</strong> ${_auth.currentUser!.email}</p>
+                                            <p><strong>Patient Name:</strong> ${referralData['patientName']}</p>
+                                            <p><strong>Patient IC:</strong> ${referralData['patientIc']}</p>
+                                            <p><strong>Nationality:</strong> ${referralData['patientNationality']}</p>
+                                            <p><strong>Description:</strong></p>
+                                            <p style="padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+                                              ${referralData['patientPhone']?.replaceAll('\n', '<br/>')}<br/>
+                                              ${referralData['patientAddress']?.replaceAll('\n', '<br/>')}<br/>
+                                              ${referralData['patientComplaints']?.replaceAll('\n', '<br/>')}<br/>
+                                              ${referralData['reasonReferral']?.replaceAll('\n', '<br/>')}<br/>
+                                            </p>
+                                            <p>
+                                              Please check your app to complete the referral.
+                                            </p>
+                                          </div>
+                                        ''',
+                              }
+                            });
                           }
                         },
                         icon: Icon(Icons.send,color: Colors.white,), label: Text('Completed',style: TextStyle(color: Colors.white),),

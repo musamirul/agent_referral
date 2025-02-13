@@ -1,5 +1,7 @@
 import 'package:agent_referral/gpclinic/views/screens/patient_tap_screen/patient_history_screen.dart';
+import 'package:agent_referral/gpclinic/views/screens/patient_tap_screen/patient_historyae_screen.dart';
 import 'package:agent_referral/gpclinic/views/screens/patient_tap_screen/patient_pending_screen.dart';
+import 'package:agent_referral/gpclinic/views/screens/patient_tap_screen/patient_pendingae_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,7 +11,7 @@ class PatientRegisteredListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -19,13 +21,17 @@ class PatientRegisteredListScreen extends StatelessWidget {
           backgroundColor: Colors.orange.shade400,
           elevation: 0,
           bottom: TabBar(tabs: [
-            Tab(child: Text('Pending Approval',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
-            Tab(child: Text('Completed',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
+            Tab(child: Text('Pending DID',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
+            Tab(child: Text('Pending A&E',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
+            Tab(child: Text('Completed DID',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
+            Tab(child: Text('Completed A&E',style: GoogleFonts.oswald(color: Colors.brown.shade600,fontWeight: FontWeight.bold,letterSpacing: 0.1),),),
           ]),
         ),
         body: TabBarView(children: [
           PatientPendingScreen(),
-          PatientHistoryScreen()
+          PatientPendingAeScreen(),
+          PatientHistoryScreen(),
+          PatientHistoryAeScreen()
         ]),
       ),
     );
